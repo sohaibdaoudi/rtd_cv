@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Changing Tire Assistant – Computer Vision &amp; NLP Project &mdash; TimeSeriesProject  documentation</title>
+  <title>Changing Tire Assistant – Computer Vision &amp; NLP Project 🚗 &mdash; TimeSeriesProject  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
@@ -42,24 +42,48 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <!-- Local TOC -->
               <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Changing Tire Assistant – Computer Vision &amp; NLP Project</a><ul>
-<li><a class="reference internal" href="#project-status-under-development">🚧 Project Status: Under Development 🚧</a></li>
-<li><a class="reference internal" href="#overview">📖 Overview</a></li>
-<li><a class="reference internal" href="#system-features">🔍 System Features</a></li>
-<li><a class="reference internal" href="#project-structure">📂 Project Structure</a></li>
-<li><a class="reference internal" href="#models-used">🧠 Models Used</a><ul>
-<li><a class="reference internal" href="#object-detection">Object Detection</a></li>
-<li><a class="reference internal" href="#action-recognition">Action Recognition</a></li>
-<li><a class="reference internal" href="#voice-assistant">Voice Assistant</a></li>
+<li><a class="reference internal" href="#">Changing Tire Assistant – Computer Vision &amp; NLP Project 🚗</a><ul>
+<li><a class="reference internal" href="#overview">Overview 🌟</a></li>
+<li><a class="reference internal" href="#system-features">System Features 🛠️</a></li>
+<li><a class="reference internal" href="#project-structure">Project Structure 📁</a></li>
+<li><a class="reference internal" href="#models-used">Models Used 🧠</a></li>
+<li><a class="reference internal" href="#data">Data 📊</a><ul>
+<li><a class="reference internal" href="#data-collection-methodology">Data Collection Methodology 🎥</a></li>
+<li><a class="reference internal" href="#dataset-structure">Dataset Structure 🗃️</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#data">📊 Data</a><ul>
-<li><a class="reference internal" href="#data-collection-methodology">Data Collection Methodology</a></li>
-<li><a class="reference internal" href="#dataset-structure">Dataset Structure</a></li>
+<li><a class="reference internal" href="#changing-tire-assistant-computer-vision-nlp-project-models-testing">Changing Tire Assistant - Computer Vision &amp; NLP Project: Models Testing 🧪</a></li>
+<li><a class="reference internal" href="#object-detection">Object Detection 🎯</a><ul>
+<li><a class="reference internal" href="#yolov11-nano-implementation-guide">YOLOv11 Nano Implementation Guide 📄</a></li>
+<li><a class="reference internal" href="#prerequisites">Prerequisites ✅</a></li>
+<li><a class="reference internal" href="#setup">Setup ⚙️</a><ul>
+<li><a class="reference internal" href="#option-1-using-git-recommended-full-repository">Option 1: Using Git (Recommended - Full Repository) 🚀</a></li>
+<li><a class="reference internal" href="#clone-the-repository">1. <strong>Clone the Repository</strong>:</a></li>
+<li><a class="reference internal" href="#option-2-manual-download-zip">Option 2: Manual Download (ZIP) ⬇️</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#authors">👨‍💻 Authors</a></li>
-<li><a class="reference internal" href="#license">📜 License</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#installation-and-execution">Installation and Execution 🚀</a><ul>
+<li><a class="reference internal" href="#navigate-to-your-project-directory">0. Navigate to Your Project Directory 📂</a><ul>
+<li><a class="reference internal" href="#first-open-your-command-line-interface-e-g-command-prompt-powershell-terminal-anaconda-prompt-and-navigate-to-the-project-s-root-folder-replace-c-path-to-folder-with-the-actual-path-to-your-object-detection-folder">First, open your command line interface (e.g., Command Prompt, PowerShell, Terminal, Anaconda Prompt) and navigate to the project’s root folder. Replace <cite>C:path_to_folder</cite> with the actual path to your Object Detection folder.</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#create-a-virtual-environment-recommended-choose-one-of-the-following-methods">1. Create a Virtual Environment (Recommended) (Choose <strong>one</strong> of the following methods) 🐍:</a></li>
+<li><a class="reference internal" href="#install-dependencies">2. Install Dependencies 📦</a><ul>
+<li><a class="reference internal" href="#ensure-your-pip-is-up-to-date-if-using-venv-or-pip-within-conda-and-then-install-the-required-packages">Ensure your <cite>pip</cite> is up to date (if using <cite>venv</cite> or pip within Conda) and then install the required packages.</a></li>
+<li><a class="reference internal" href="#if-using-conda-you-might-prefer-to-install-packages-using-conda-where-possible-for-example"><em>If using Conda, you might prefer to install packages using Conda where possible, for example:</em></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#run-detection">3. Run Detection ▶️</a><ul>
+<li><a class="reference internal" href="#execute-the-detection-script-the-following-command-runs-the-detection-on-the-test-video-using-the-gpu-or-using-only-cpu-by-removing-device-0">Execute the detection script. The following command runs the detection on the test video using the GPU (or using only CPU by removing –device 0).</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#action-recognition">Action Recognition 🏃</a></li>
+<li><a class="reference internal" href="#authors">Authors 👥</a></li>
+<li><a class="reference internal" href="#license">License 📄</a></li>
 </ul>
 </li>
 </ul>
@@ -78,7 +102,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Changing Tire Assistant – Computer Vision &amp; NLP Project</li>
+      <li class="breadcrumb-item active">Changing Tire Assistant – Computer Vision &amp; NLP Project 🚗</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -88,132 +112,238 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="changing-tire-assistant-computer-vision-nlp-project">
-<span id="top"></span><h1>Changing Tire Assistant – Computer Vision &amp; NLP Project<a class="headerlink" href="#changing-tire-assistant-computer-vision-nlp-project" title="Link to this heading"></a></h1>
-<p><a class="reference external" href="https://www.python.org/downloads/"><img alt="Python" src="https://img.shields.io/badge/python-3.x-blue.svg" /></a> <a class="reference external" href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/License-MIT-yellow.svg" /></a></p>
-<section id="project-status-under-development">
-<h2>🚧 Project Status: Under Development 🚧<a class="headerlink" href="#project-status-under-development" title="Link to this heading"></a></h2>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This project is currently in active development. Core functionality is implemented but requires further optimization for production use.</p>
-</div>
-</section>
+  <a class="reference external image-reference" href="https://www.python.org/downloads/"><img alt="https://img.shields.io/badge/python-3.x-blue.svg" src="https://img.shields.io/badge/python-3.x-blue.svg" />
+</a>
+<a class="reference external image-reference" href="./LICENSE"><img alt="https://img.shields.io/badge/License-MIT-yellow.svg" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
+</a>
+<section id="changing-tire-assistant-computer-vision-nlp-project">
+<h1>Changing Tire Assistant – Computer Vision &amp; NLP Project 🚗<a class="headerlink" href="#changing-tire-assistant-computer-vision-nlp-project" title="Link to this heading"></a></h1>
+<p><strong>🚧 Project Status: Under Development 🚧</strong></p>
+<p>—</p>
 <section id="overview">
-<h2>📖 Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
-<p>This assistant leverages real-time computer vision and NLP to guide users through changing a flat tire using an egocentric (chest-mounted) camera. The assistant:</p>
-<ul class="simple">
-<li><p>Detects tools and components in real-time</p></li>
-<li><p>Tracks task progression through action recognition</p></li>
-<li><p>Provides interactive voice and visual instructions</p></li>
-<li><p>Operates with low latency on edge devices</p></li>
-</ul>
+<h2>Overview 🌟<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>This assistant leverages real-time computer vision and NLP to guide users through changing a flat tire using an egocentric (chest-mounted) camera.</p>
+<p>The assistant detects tools, tracks task progress, and provides interactive, step-by-step visual and voice instructions for changing a vehicle tire.</p>
+<p>—</p>
 </section>
 <section id="system-features">
-<h2>🔍 System Features<a class="headerlink" href="#system-features" title="Link to this heading"></a></h2>
-<p><strong>Core Capabilities:</strong>
-- <strong>Real-Time Tool Detection</strong>:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>Identifies car jack, wheel wrench, lug nuts, and spare tire</p></li>
-<li><p>Handles occlusions and varying lighting conditions</p></li>
-</ul>
-</div></blockquote>
+<h2>System Features 🛠️<a class="headerlink" href="#system-features" title="Link to this heading"></a></h2>
 <ul class="simple">
+<li><p><strong>Real-Time Tool Detection</strong>:
+- Identifies car jack, wheel wrench, etc.</p></li>
 <li><p><strong>Action Recognition</strong>:
-- Tracks 10+ key steps in tire-changing process
-- Moniors proper sequence validation</p></li>
+- Tracks task progression like loosening nuts, jacking the car, replacing the wheel, etc.</p></li>
 <li><p><strong>Voice Assistant</strong>:
-- Natural language interaction via Whisper STT
-- Context-aware responses to user queries</p></li>
-<li><p><strong>Edge Optimization</strong>:
-- Quantized models for mobile deployment
-- &lt;500ms end-to-end latency target</p></li>
+- Responds to user queries such as “What’s next?”</p></li>
+<li><p><strong>Edge-Friendly Pipeline</strong>:
+- Designed for deployment on mobile or embedded systems with minimal latency.</p></li>
 </ul>
+<p>—</p>
 </section>
 <section id="project-structure">
-<h2>📂 Project Structure<a class="headerlink" href="#project-structure" title="Link to this heading"></a></h2>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>├── action_recognition/    # Action classification models and training
-├── Object Detection/      # YOLOv8 implementation and custom weights
-├── requirements.txt       # Python dependencies
-├── data_processing/       # Dataset preprocessing scripts
-└── deployment/            # Edge deployment configurations
+<h2>Project Structure 📁<a class="headerlink" href="#project-structure" title="Link to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>├── action_recognition/
+├── Object Detection/
+├── UML Model
 </pre></div>
 </div>
+<p>—</p>
 </section>
 <section id="models-used">
-<h2>🧠 Models Used<a class="headerlink" href="#models-used" title="Link to this heading"></a></h2>
-<section id="object-detection">
-<h3>Object Detection<a class="headerlink" href="#object-detection" title="Link to this heading"></a></h3>
+<h2>Models Used 🧠<a class="headerlink" href="#models-used" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p>YOLOv8n fine-tuned on tire-change tools</p></li>
-<li><p>640x640 input resolution</p></li>
-<li><p>Custom classes: {jack, wrench, lug_nut, spare_tire}</p></li>
+<li><p><strong>Object Detection</strong>: YOLOv11n fine-tuned on tire-change-specific tools and components</p></li>
+<li><p><strong>Action Recognition</strong>: We are trying different models SlowFast , TSM , TimeDistributed EfficientNetB0</p></li>
+<li><p><strong>Voice Assistant</strong>: Whisper-based STT with a custom NLP pipeline for contextual understanding</p></li>
 </ul>
-</section>
-<section id="action-recognition">
-<h3>Action Recognition<a class="headerlink" href="#action-recognition" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p>Experimental architectures:
-- SlowFast R50
-- TSM (Temporal Shift Module)
-- TimeDistributed EfficientNetB0</p></li>
-<li><p>Input: 16-frame clips &#64; 224x224</p></li>
-</ul>
-</section>
-<section id="voice-assistant">
-<h3>Voice Assistant<a class="headerlink" href="#voice-assistant" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p>Whisper Base for speech-to-text</p></li>
-<li><p>Custom intent recognition pipeline</p></li>
-<li><p>Text-to-speech via pyttsx3</p></li>
-</ul>
-</section>
+<p>—</p>
 </section>
 <section id="data">
-<h2>📊 Data<a class="headerlink" href="#data" title="Link to this heading"></a></h2>
+<h2>Data 📊<a class="headerlink" href="#data" title="Link to this heading"></a></h2>
+<p>We collected and curated a custom dataset specifically for the tire change domain:</p>
 <section id="data-collection-methodology">
-<h3>Data Collection Methodology<a class="headerlink" href="#data-collection-methodology" title="Link to this heading"></a></h3>
+<h3>Data Collection Methodology 🎥<a class="headerlink" href="#data-collection-methodology" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Primary Source</strong>:
-- 4.5 hours of egocentric footage
-- Samsung A50 &#64; 1080p/30fps
-- Renault Megane 2 scenarios</p></li>
-<li><p><strong>Secondary Source</strong>:
-- 120 curated YouTube videos
-- Multiple vehicle types and environments</p></li>
+<li><p><strong>Primary Source</strong>: Self-collected footage changing two tires on a Renault Megane 2, recorded with Samsung A50 smartphones from chest-mounted positions</p></li>
+<li><p><strong>Secondary Source</strong>: Curated YouTube videos showing different tire change scenarios and vehicle types</p></li>
+<li><p><strong>Other Source</strong>: We scraped the web to gather tool specifications and case studies related to flat tires. Additionally, we recorded standard videos and extracted frames for further processing. These frames were then manually annotated to identify tools, resulting in a dataset of approximately 1,597 annotated images.</p></li>
+<li><p><strong>Annotation Process</strong>: Manual annotation of action segments and tool detection bounding boxes</p></li>
 </ul>
 </section>
 <section id="dataset-structure">
-<h3>Dataset Structure<a class="headerlink" href="#dataset-structure" title="Link to this heading"></a></h3>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>data/
-├── lower_car/             # 34 video clips
-├── lift_car_with_jack/    # 28 video clips
-├── tighten_bolts/         # 41 video clips
-└── ...                    # Other action classes
-├── labels.csv             # Temporal annotations
-└── dataset_report.pdf     # Statistical analysis
+<h3>Dataset Structure 🗃️<a class="headerlink" href="#dataset-structure" title="Link to this heading"></a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>data/
+├── lower_car/              # Videos/frames of lowering the car from the jack
+├── lift_car_with_jack/     # Videos/frames of raising the car with jack
+├── tighten_bolts/          # Videos/frames of final bolt tightening with wrench
+├── initial_wrench_tighten/# Videos/frames of initial wrench positioning
+├── place_spare_tire/       # Videos/frames of positioning the spare tire
+├── remove_tire/            # Videos/frames of removing the flat tire
+├── hand_tighten_bolts/     # Videos/frames of hand-tightening bolts
+├── loosen_bolts/           # Videos/frames of loosening wheel bolts
+├── remove_bolts/           # Videos/frames of removing wheel bolts
+├── labels.csv              # Action timestamps and class annotations
+└── README.txt              # Dataset documentation
 </pre></div>
 </div>
-<img alt="Sample dataset visualization" src="https://github.com/user-attachments/assets/6d6bef7f-5d31-4b78-b57b-93b3566c5007" />
+<p><a class="reference external" href="https://github.com/user-attachments/assets/6d6bef7f-5d31-4b78-b57b-93b3566c5007">https://github.com/user-attachments/assets/6d6bef7f-5d31-4b78-b57b-93b3566c5007</a></p>
 </section>
+</section>
+<section id="changing-tire-assistant-computer-vision-nlp-project-models-testing">
+<h2>Changing Tire Assistant - Computer Vision &amp; NLP Project: Models Testing 🧪<a class="headerlink" href="#changing-tire-assistant-computer-vision-nlp-project-models-testing" title="Link to this heading"></a></h2>
+<p>This document outlines the setup and usage of the models implemented within the Changing Tire Assistant project.</p>
+<p>—</p>
+</section>
+<section id="object-detection">
+<h2>Object Detection 🎯<a class="headerlink" href="#object-detection" title="Link to this heading"></a></h2>
+<p>This section details the implementation of the object detection model.</p>
+<section id="yolov11-nano-implementation-guide">
+<h3>YOLOv11 Nano Implementation Guide 📄<a class="headerlink" href="#yolov11-nano-implementation-guide" title="Link to this heading"></a></h3>
+<p><strong>Description</strong>: This model is utilized for identifying various objects relevant to the tire-changing process.</p>
+</section>
+<section id="prerequisites">
+<h3>Prerequisites ✅<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Python 3.1X</p></li>
+<li><p>Ultralytics package (version compatible with your GPU, you can ask any AI for that)</p></li>
+<li><p>CUDA 11.8+ (recommended for GPU acceleration)</p></li>
+</ul>
+<p>—</p>
+</section>
+<section id="setup">
+<h3>Setup ⚙️<a class="headerlink" href="#setup" title="Link to this heading"></a></h3>
+<p>You can set up the project by cloning the full repository or by cloning only the <cite>Object Detection</cite> directory using Git’s sparse checkout feature.</p>
+<section id="option-1-using-git-recommended-full-repository">
+<h4>Option 1: Using Git (Recommended - Full Repository) 🚀<a class="headerlink" href="#option-1-using-git-recommended-full-repository" title="Link to this heading"></a></h4>
+</section>
+<section id="clone-the-repository">
+<h4>1. <strong>Clone the Repository</strong>:<a class="headerlink" href="#clone-the-repository" title="Link to this heading"></a></h4>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/sohaibdaoudi/ChangingTireAssistant_CV_NLP_Project.git
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p><strong>Navigate to the Object Detection Directory</strong>: Open your terminal or command prompt and change to the <cite>Object Detection</cite> folder within the extracted contents.</p></li>
+</ol>
+</section>
+<section id="option-2-manual-download-zip">
+<h4>Option 2: Manual Download (ZIP) ⬇️<a class="headerlink" href="#option-2-manual-download-zip" title="Link to this heading"></a></h4>
+<ol class="arabic simple">
+<li><p><strong>Download the Repository</strong>:
+- <strong>Full Repository</strong>: Navigate to the <a class="reference external" href="https://github.com/sohaibdaoudi/ChangingTireAssistant_CV_NLP_Project">main repository page</a> and click on “Code” → “Download ZIP”.
+- <strong>Object Detection</strong>: A direct download for only the Object Detection folder is typically achieved by downloading the full repository and then extracting the relevant folder.</p></li>
+<li><p><strong>Extract the ZIP File</strong>: Unzip the downloaded file to your desired location.</p></li>
+<li><p><strong>Navigate to the Object Detection Directory</strong>: Open your terminal or command prompt and change to the <cite>Object Detection</cite> folder within the extracted contents.</p></li>
+</ol>
+<p>—</p>
+</section>
+</section>
+</section>
+<section id="installation-and-execution">
+<h2>Installation and Execution 🚀<a class="headerlink" href="#installation-and-execution" title="Link to this heading"></a></h2>
+<section id="navigate-to-your-project-directory">
+<h3>0. Navigate to Your Project Directory 📂<a class="headerlink" href="#navigate-to-your-project-directory" title="Link to this heading"></a></h3>
+<section id="first-open-your-command-line-interface-e-g-command-prompt-powershell-terminal-anaconda-prompt-and-navigate-to-the-project-s-root-folder-replace-c-path-to-folder-with-the-actual-path-to-your-object-detection-folder">
+<h4>First, open your command line interface (e.g., Command Prompt, PowerShell, Terminal, Anaconda Prompt) and navigate to the project’s root folder. Replace <cite>C:path_to_folder</cite> with the actual path to your Object Detection folder.<a class="headerlink" href="#first-open-your-command-line-interface-e-g-command-prompt-powershell-terminal-anaconda-prompt-and-navigate-to-the-project-s-root-folder-replace-c-path-to-folder-with-the-actual-path-to-your-object-detection-folder" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>C:<span class="se">\p</span>ath_to_project
+</pre></div>
+</div>
+</section>
+</section>
+<section id="create-a-virtual-environment-recommended-choose-one-of-the-following-methods">
+<h3>1. Create a Virtual Environment (Recommended) (Choose <strong>one</strong> of the following methods) 🐍:<a class="headerlink" href="#create-a-virtual-environment-recommended-choose-one-of-the-following-methods" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Using `venv` (Python’s built-in)</strong>:</p></li>
+</ul>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>On Windows:</p></li>
+</ul>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>venv<span class="se">\S</span>cripts<span class="se">\a</span>ctivate
+</pre></div>
+</div>
+</div></blockquote>
+<ul class="simple">
+<li><p>On macOS/Linux:</p></li>
+</ul>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>venv/bin/activate
+</pre></div>
+</div>
+</div></blockquote>
+</div></blockquote>
+<ul>
+<li><p><strong>Using `conda` (Anaconda/Miniconda)</strong>:
+Replace <cite>myenv</cite> with your desired environment name and your preferred compatible version of python (3.1X).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>--name<span class="w"> </span>myenv<span class="w"> </span>python
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>activate<span class="w"> </span>myenv
+</pre></div>
+</div>
+</li>
+</ul>
+</div></blockquote>
+</section>
+<section id="install-dependencies">
+<h3>2. Install Dependencies 📦<a class="headerlink" href="#install-dependencies" title="Link to this heading"></a></h3>
+<section id="ensure-your-pip-is-up-to-date-if-using-venv-or-pip-within-conda-and-then-install-the-required-packages">
+<h4>Ensure your <cite>pip</cite> is up to date (if using <cite>venv</cite> or pip within Conda) and then install the required packages.<a class="headerlink" href="#ensure-your-pip-is-up-to-date-if-using-venv-or-pip-within-conda-and-then-install-the-required-packages" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+pip<span class="w"> </span>install<span class="w"> </span><span class="nv">ultralytics</span><span class="o">==</span>XX.XX.XX<span class="w"> </span>opencv-python<span class="o">==</span>XX.XX.XX
+</pre></div>
+</div>
+</section>
+<section id="if-using-conda-you-might-prefer-to-install-packages-using-conda-where-possible-for-example">
+<h4><em>If using Conda, you might prefer to install packages using Conda where possible, for example:</em><a class="headerlink" href="#if-using-conda-you-might-prefer-to-install-packages-using-conda-where-possible-for-example" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># conda install anaconda # For a fuller anaconda distribution within the environment if needed</span>
+<span class="c1"># conda install pip # To ensure pip is available in the conda env</span>
+<span class="c1"># pip install ultralytics==XX.XX.XX opencv-python==XX.XX.XX</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="run-detection">
+<h3>3. Run Detection ▶️<a class="headerlink" href="#run-detection" title="Link to this heading"></a></h3>
+<section id="execute-the-detection-script-the-following-command-runs-the-detection-on-the-test-video-using-the-gpu-or-using-only-cpu-by-removing-device-0">
+<h4>Execute the detection script. The following command runs the detection on the test video using the GPU (or using only CPU by removing –device 0).<a class="headerlink" href="#execute-the-detection-script-the-following-command-runs-the-detection-on-the-test-video-using-the-gpu-or-using-only-cpu-by-removing-device-0" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>yolo_detect.py<span class="w"> </span>--model<span class="w"> </span>best.pt<span class="w"> </span>--source<span class="w"> </span>test.mp4<span class="w"> </span>--resolution<span class="w"> </span>1280x720<span class="w"> </span>--device<span class="w"> </span><span class="m">0</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--model</span> <span class="pre">best.pt</span></code>: Specifies the path to your trained model weights.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--source</span> <span class="pre">test.mp4</span></code>: Specifies the path to your input video or image source.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--resolution</span> <span class="pre">1280x720</span></code>: Sets the input resolution. This flag supports various input sizes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--device</span> <span class="pre">0</span></code>: This command will let the test run on GPU, you can delete it if you want to use only CPU.</p></li>
+</ul>
+<p>—</p>
+</section>
+</section>
+</section>
+<section id="action-recognition">
+<h2>Action Recognition 🏃<a class="headerlink" href="#action-recognition" title="Link to this heading"></a></h2>
+<p><em>(Details for the Action Recognition module, including specific models, requirements, setup, installation, and execution, should be added here following a similar structure to the Object Detection section.)</em></p>
+<p>—</p>
 </section>
 <section id="authors">
-<h2>👨‍💻 Authors<a class="headerlink" href="#authors" title="Link to this heading"></a></h2>
+<h2>Authors 👥<a class="headerlink" href="#authors" title="Link to this heading"></a></h2>
+<p>This project is developed and maintained by:</p>
 <ul class="simple">
-<li><p><strong>Sohaib Daoudi</strong>
-- Email: <a class="reference external" href="mailto:soh&#46;daoudi&#37;&#52;&#48;gmail&#46;com">soh<span>&#46;</span>daoudi<span>&#64;</span>gmail<span>&#46;</span>com</a>
-- GitHub: <a class="reference external" href="https://github.com/sohaibdaoudi">&#64;sohaibdaoudi</a></p></li>
-<li><p><strong>Marouane Majidi</strong>
-- Email: <a class="reference external" href="mailto:majidi&#46;marouane0&#37;&#52;&#48;gmail&#46;com">majidi<span>&#46;</span>marouane0<span>&#64;</span>gmail<span>&#46;</span>com</a>
-- GitHub: <a class="reference external" href="https://github.com/marouanemajidi">&#64;marouanemajidi</a></p></li>
+<li><p><strong>SOHAIB DAOUDI</strong> – <a class="reference external" href="mailto:soh&#46;daoudi&#37;&#52;&#48;gmail&#46;com">soh<span>&#46;</span>daoudi<span>&#64;</span>gmail<span>&#46;</span>com</a></p></li>
+<li><p><strong>MAROUANE MAJIDI</strong> – <a class="reference external" href="mailto:majidi&#46;marouane0&#37;&#52;&#48;gmail&#46;com">majidi<span>&#46;</span>marouane0<span>&#64;</span>gmail<span>&#46;</span>com</a></p></li>
 </ul>
+<p>—</p>
 </section>
 <section id="license">
-<h2>📜 License<a class="headerlink" href="#license" title="Link to this heading"></a></h2>
-<p>This project is licensed under the <a class="reference external" href="https://opensource.org/licenses/MIT">MIT License</a>. Full text available in the repository’s LICENSE file.</p>
-<p>—</p>
-<p class="centered">
-<strong><em>Safety first! Always consult professional mechanics for complex automotive procedures.</em></strong></p></section>
+<h2>License 📄<a class="headerlink" href="#license" title="Link to this heading"></a></h2>
+<p>This project is licensed under the <a class="reference external" href="https://opensource.org/licenses/MIT">MIT License</a>. Please see the <code class="docutils literal notranslate"><span class="pre">LICENSE</span></code> file in the repository for full license text and details.</p>
+</section>
 </section>
 
 
