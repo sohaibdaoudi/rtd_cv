@@ -13,11 +13,7 @@ author = 'DAOUDI & MAJIDI'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = [
-    'sphinx.ext.imgconverter',
-    'sphinxcontrib.email',
-    'sphinx.ext.autosectionlabel'
-]
+extensions = []
 
 templates_path = ['_templates']
 exclude_patterns = []

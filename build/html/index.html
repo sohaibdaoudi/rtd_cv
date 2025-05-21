@@ -1,0 +1,247 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changing Tire Assistant – Computer Vision &amp; NLP Project &mdash; TimeSeriesProject  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            TimeSeriesProject
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Changing Tire Assistant – Computer Vision &amp; NLP Project</a><ul>
+<li><a class="reference internal" href="#project-status-under-development">🚧 Project Status: Under Development 🚧</a></li>
+<li><a class="reference internal" href="#overview">📖 Overview</a></li>
+<li><a class="reference internal" href="#system-features">🔍 System Features</a></li>
+<li><a class="reference internal" href="#project-structure">📂 Project Structure</a></li>
+<li><a class="reference internal" href="#models-used">🧠 Models Used</a><ul>
+<li><a class="reference internal" href="#object-detection">Object Detection</a></li>
+<li><a class="reference internal" href="#action-recognition">Action Recognition</a></li>
+<li><a class="reference internal" href="#voice-assistant">Voice Assistant</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#data">📊 Data</a><ul>
+<li><a class="reference internal" href="#data-collection-methodology">Data Collection Methodology</a></li>
+<li><a class="reference internal" href="#dataset-structure">Dataset Structure</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#authors">👨‍💻 Authors</a></li>
+<li><a class="reference internal" href="#license">📜 License</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">TimeSeriesProject</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Changing Tire Assistant – Computer Vision &amp; NLP Project</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="changing-tire-assistant-computer-vision-nlp-project">
+<span id="top"></span><h1>Changing Tire Assistant – Computer Vision &amp; NLP Project<a class="headerlink" href="#changing-tire-assistant-computer-vision-nlp-project" title="Link to this heading"></a></h1>
+<p><a class="reference external" href="https://www.python.org/downloads/"><img alt="Python" src="https://img.shields.io/badge/python-3.x-blue.svg" /></a> <a class="reference external" href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/License-MIT-yellow.svg" /></a></p>
+<section id="project-status-under-development">
+<h2>🚧 Project Status: Under Development 🚧<a class="headerlink" href="#project-status-under-development" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This project is currently in active development. Core functionality is implemented but requires further optimization for production use.</p>
+</div>
+</section>
+<section id="overview">
+<h2>📖 Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>This assistant leverages real-time computer vision and NLP to guide users through changing a flat tire using an egocentric (chest-mounted) camera. The assistant:</p>
+<ul class="simple">
+<li><p>Detects tools and components in real-time</p></li>
+<li><p>Tracks task progression through action recognition</p></li>
+<li><p>Provides interactive voice and visual instructions</p></li>
+<li><p>Operates with low latency on edge devices</p></li>
+</ul>
+</section>
+<section id="system-features">
+<h2>🔍 System Features<a class="headerlink" href="#system-features" title="Link to this heading"></a></h2>
+<p><strong>Core Capabilities:</strong>
+- <strong>Real-Time Tool Detection</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Identifies car jack, wheel wrench, lug nuts, and spare tire</p></li>
+<li><p>Handles occlusions and varying lighting conditions</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>Action Recognition</strong>:
+- Tracks 10+ key steps in tire-changing process
+- Moniors proper sequence validation</p></li>
+<li><p><strong>Voice Assistant</strong>:
+- Natural language interaction via Whisper STT
+- Context-aware responses to user queries</p></li>
+<li><p><strong>Edge Optimization</strong>:
+- Quantized models for mobile deployment
+- &lt;500ms end-to-end latency target</p></li>
+</ul>
+</section>
+<section id="project-structure">
+<h2>📂 Project Structure<a class="headerlink" href="#project-structure" title="Link to this heading"></a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>├── action_recognition/    # Action classification models and training
+├── Object Detection/      # YOLOv8 implementation and custom weights
+├── requirements.txt       # Python dependencies
+├── data_processing/       # Dataset preprocessing scripts
+└── deployment/            # Edge deployment configurations
+</pre></div>
+</div>
+</section>
+<section id="models-used">
+<h2>🧠 Models Used<a class="headerlink" href="#models-used" title="Link to this heading"></a></h2>
+<section id="object-detection">
+<h3>Object Detection<a class="headerlink" href="#object-detection" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>YOLOv8n fine-tuned on tire-change tools</p></li>
+<li><p>640x640 input resolution</p></li>
+<li><p>Custom classes: {jack, wrench, lug_nut, spare_tire}</p></li>
+</ul>
+</section>
+<section id="action-recognition">
+<h3>Action Recognition<a class="headerlink" href="#action-recognition" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Experimental architectures:
+- SlowFast R50
+- TSM (Temporal Shift Module)
+- TimeDistributed EfficientNetB0</p></li>
+<li><p>Input: 16-frame clips &#64; 224x224</p></li>
+</ul>
+</section>
+<section id="voice-assistant">
+<h3>Voice Assistant<a class="headerlink" href="#voice-assistant" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Whisper Base for speech-to-text</p></li>
+<li><p>Custom intent recognition pipeline</p></li>
+<li><p>Text-to-speech via pyttsx3</p></li>
+</ul>
+</section>
+</section>
+<section id="data">
+<h2>📊 Data<a class="headerlink" href="#data" title="Link to this heading"></a></h2>
+<section id="data-collection-methodology">
+<h3>Data Collection Methodology<a class="headerlink" href="#data-collection-methodology" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Primary Source</strong>:
+- 4.5 hours of egocentric footage
+- Samsung A50 &#64; 1080p/30fps
+- Renault Megane 2 scenarios</p></li>
+<li><p><strong>Secondary Source</strong>:
+- 120 curated YouTube videos
+- Multiple vehicle types and environments</p></li>
+</ul>
+</section>
+<section id="dataset-structure">
+<h3>Dataset Structure<a class="headerlink" href="#dataset-structure" title="Link to this heading"></a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>data/
+├── lower_car/             # 34 video clips
+├── lift_car_with_jack/    # 28 video clips
+├── tighten_bolts/         # 41 video clips
+└── ...                    # Other action classes
+├── labels.csv             # Temporal annotations
+└── dataset_report.pdf     # Statistical analysis
+</pre></div>
+</div>
+<img alt="Sample dataset visualization" src="https://github.com/user-attachments/assets/6d6bef7f-5d31-4b78-b57b-93b3566c5007" />
+</section>
+</section>
+<section id="authors">
+<h2>👨‍💻 Authors<a class="headerlink" href="#authors" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Sohaib Daoudi</strong>
+- Email: <a class="reference external" href="mailto:soh&#46;daoudi&#37;&#52;&#48;gmail&#46;com">soh<span>&#46;</span>daoudi<span>&#64;</span>gmail<span>&#46;</span>com</a>
+- GitHub: <a class="reference external" href="https://github.com/sohaibdaoudi">&#64;sohaibdaoudi</a></p></li>
+<li><p><strong>Marouane Majidi</strong>
+- Email: <a class="reference external" href="mailto:majidi&#46;marouane0&#37;&#52;&#48;gmail&#46;com">majidi<span>&#46;</span>marouane0<span>&#64;</span>gmail<span>&#46;</span>com</a>
+- GitHub: <a class="reference external" href="https://github.com/marouanemajidi">&#64;marouanemajidi</a></p></li>
+</ul>
+</section>
+<section id="license">
+<h2>📜 License<a class="headerlink" href="#license" title="Link to this heading"></a></h2>
+<p>This project is licensed under the <a class="reference external" href="https://opensource.org/licenses/MIT">MIT License</a>. Full text available in the repository’s LICENSE file.</p>
+<p>—</p>
+<p class="centered">
+<strong><em>Safety first! Always consult professional mechanics for complex automotive procedures.</em></strong></p></section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, DAOUDI &amp; MAJIDI.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
