@@ -3,16 +3,16 @@
 .. image:: https://img.shields.io/badge/License-MIT-yellow.svg
    :target: ./LICENSE
 
-***********************************************
+=============================================================
 Changing Tire Assistant – Computer Vision & NLP Project 🚗
-***********************************************
+=============================================================
 
 **🚧 Project Status: Under Development 🚧**
 
 ---
 
 Overview 🌟
-========
+=============
 This assistant leverages real-time computer vision and NLP to guide users through changing a flat tire using an egocentric (chest-mounted) camera. 
 
 The assistant detects tools, tracks task progress, and provides interactive, step-by-step visual and voice instructions for changing a vehicle tire.
@@ -20,7 +20,7 @@ The assistant detects tools, tracks task progress, and provides interactive, ste
 ---
 
 System Features 🛠️
-=================
+=====================
 - **Real-Time Tool Detection**:
   - Identifies car jack, wheel wrench, etc.
 - **Action Recognition**:
@@ -33,7 +33,7 @@ System Features 🛠️
 ---
 
 Project Structure 📁
-=================
+=======================
 .. code-block:: text
 
     ├── action_recognition/             
@@ -43,7 +43,7 @@ Project Structure 📁
 ---
 
 Models Used 🧠
-============
+=================
 - **Object Detection**: YOLOv11n fine-tuned on tire-change-specific tools and components
 - **Action Recognition**: We are trying different models SlowFast , TSM , TimeDistributed EfficientNetB0
 - **Voice Assistant**: Whisper-based STT with a custom NLP pipeline for contextual understanding
@@ -51,18 +51,18 @@ Models Used 🧠
 ---
 
 Data 📊
-====
+========
 We collected and curated a custom dataset specifically for the tire change domain:
 
 Data Collection Methodology 🎥
----------------------------
+----------------------------------------
 - **Primary Source**: Self-collected footage changing two tires on a Renault Megane 2, recorded with Samsung A50 smartphones from chest-mounted positions
 - **Secondary Source**: Curated YouTube videos showing different tire change scenarios and vehicle types
 - **Other Source**: We scraped the web to gather tool specifications and case studies related to flat tires. Additionally, we recorded standard videos and extracted frames for further processing. These frames were then manually annotated to identify tools, resulting in a dataset of approximately 1,597 annotated images.
 - **Annotation Process**: Manual annotation of action segments and tool detection bounding boxes
 
 Dataset Structure 🗃️
------------------
+------------------------------
 .. code-block:: text
 
     data/
@@ -81,21 +81,21 @@ Dataset Structure 🗃️
 https://github.com/user-attachments/assets/6d6bef7f-5d31-4b78-b57b-93b3566c5007
 
 Changing Tire Assistant - Computer Vision & NLP Project: Models Testing 🧪
-=======================================================================
+============================================================================
 This document outlines the setup and usage of the models implemented within the Changing Tire Assistant project.
 
 ---
 
 Object Detection 🎯
-================
+=====================
 This section details the implementation of the object detection model.
 
 YOLOv11 Nano Implementation Guide 📄
----------------------------------
+----------------------------------------------
 **Description**: This model is utilized for identifying various objects relevant to the tire-changing process.
 
 Prerequisites ✅
--------------
+--------------------------
 * Python 3.1X
 * Ultralytics package (version compatible with your GPU, you can ask any AI for that)
 * CUDA 11.8+ (recommended for GPU acceleration)
@@ -103,13 +103,13 @@ Prerequisites ✅
 ---
 
 Setup ⚙️
------
+-------------
 You can set up the project by cloning the full repository or by cloning only the `Object Detection` directory using Git's sparse checkout feature.
 
 Option 1: Using Git (Recommended - Full Repository) 🚀
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 1. **Clone the Repository**:
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    .. code-block:: bash
 
      git clone https://github.com/sohaibdaoudi/ChangingTireAssistant_CV_NLP_Project.git
@@ -117,7 +117,7 @@ Option 1: Using Git (Recommended - Full Repository) 🚀
 2. **Navigate to the Object Detection Directory**: Open your terminal or command prompt and change to the `Object Detection` folder within the extracted contents.
 
 Option 2: Manual Download (ZIP) ⬇️
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 1. **Download the Repository**:
    - **Full Repository**: Navigate to the `main repository page <https://github.com/sohaibdaoudi/ChangingTireAssistant_CV_NLP_Project>`_ and click on "Code" → "Download ZIP".
    - **Object Detection**: A direct download for only the Object Detection folder is typically achieved by downloading the full repository and then extracting the relevant folder.
@@ -128,34 +128,35 @@ Option 2: Manual Download (ZIP) ⬇️
 ---
 
 Installation and Execution 🚀
-==========================
+==============================
 0. Navigate to Your Project Directory 📂
--------------------------------------
+------------------------------------------
 First, open your command line interface (e.g., Command Prompt, PowerShell, Terminal, Anaconda Prompt) and navigate to the project's root folder. Replace `C:\path_to_folder` with the actual path to your Object Detection folder.
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
 .. code-block:: bash
 
-    cd C:\path_to_project
+    cd C:\path_to_folder
 
 1. Create a Virtual Environment (Recommended) (Choose **one** of the following methods) 🐍:
---------------------------------
+-----------------------------------------------------------------------------------------------------
    * **Using `venv` (Python's built-in)**:
-   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
   
      .. code-block:: bash
 
        python -m venv venv
 
-     Activate the virtual environment:
-     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     Activate the environment:
+
      * On Windows:
-     --------------------------
+
        .. code-block:: bash
 
          venv\Scripts\activate
 
      * On macOS/Linux:
-     --------------------------
+
 
        .. code-block:: bash
 
@@ -171,16 +172,17 @@ First, open your command line interface (e.g., Command Prompt, PowerShell, Termi
        conda create --name myenv python
 
      Activate the Conda environment:
-     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
      .. code-block:: bash
      
 
        conda activate myenv
 
 2. Install Dependencies 📦
------------------------
+---------------------------------------------------------------------
 Ensure your `pip` is up to date (if using `venv` or pip within Conda) and then install the required packages.
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
 
 .. code-block:: bash
 
@@ -188,7 +190,8 @@ Ensure your `pip` is up to date (if using `venv` or pip within Conda) and then i
     pip install ultralytics==XX.XX.XX opencv-python==XX.XX.XX
 
 *If using Conda, you might prefer to install packages using Conda where possible, for example:*
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
 
 .. code-block:: bash
 
@@ -197,9 +200,10 @@ Ensure your `pip` is up to date (if using `venv` or pip within Conda) and then i
     # pip install ultralytics==XX.XX.XX opencv-python==XX.XX.XX
 
 3. Run Detection ▶️
----------------
+------------------------------------------------------------------------------------
 Execute the detection script. The following command runs the detection on the test video using the GPU (or using only CPU by removing --device 0).
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
 
 .. code-block:: bash
 
@@ -214,13 +218,13 @@ Execute the detection script. The following command runs the detection on the te
 ---
 
 Action Recognition 🏃
-==================
+============================
 *(Details for the Action Recognition module, including specific models, requirements, setup, installation, and execution, should be added here following a similar structure to the Object Detection section.)*
 
 ---
 
 Authors 👥
-=======
+==============
 This project is developed and maintained by:
 
 * **SOHAIB DAOUDI** – `soh.daoudi@gmail.com <mailto:soh.daoudi@gmail.com>`_
@@ -229,5 +233,5 @@ This project is developed and maintained by:
 ---
 
 License 📄
-=======
+=============
 This project is licensed under the `MIT License <https://opensource.org/licenses/MIT>`_. Please see the ``LICENSE`` file in the repository for full license text and details.

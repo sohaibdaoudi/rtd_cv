@@ -65,20 +65,10 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#installation-and-execution">Installation and Execution 🚀</a><ul>
-<li><a class="reference internal" href="#navigate-to-your-project-directory">0. Navigate to Your Project Directory 📂</a><ul>
-<li><a class="reference internal" href="#first-open-your-command-line-interface-e-g-command-prompt-powershell-terminal-anaconda-prompt-and-navigate-to-the-project-s-root-folder-replace-c-path-to-folder-with-the-actual-path-to-your-object-detection-folder">First, open your command line interface (e.g., Command Prompt, PowerShell, Terminal, Anaconda Prompt) and navigate to the project’s root folder. Replace <cite>C:path_to_folder</cite> with the actual path to your Object Detection folder.</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#navigate-to-your-project-directory">0. Navigate to Your Project Directory 📂</a></li>
 <li><a class="reference internal" href="#create-a-virtual-environment-recommended-choose-one-of-the-following-methods">1. Create a Virtual Environment (Recommended) (Choose <strong>one</strong> of the following methods) 🐍:</a></li>
-<li><a class="reference internal" href="#install-dependencies">2. Install Dependencies 📦</a><ul>
-<li><a class="reference internal" href="#ensure-your-pip-is-up-to-date-if-using-venv-or-pip-within-conda-and-then-install-the-required-packages">Ensure your <cite>pip</cite> is up to date (if using <cite>venv</cite> or pip within Conda) and then install the required packages.</a></li>
-<li><a class="reference internal" href="#if-using-conda-you-might-prefer-to-install-packages-using-conda-where-possible-for-example"><em>If using Conda, you might prefer to install packages using Conda where possible, for example:</em></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#run-detection">3. Run Detection ▶️</a><ul>
-<li><a class="reference internal" href="#execute-the-detection-script-the-following-command-runs-the-detection-on-the-test-video-using-the-gpu-or-using-only-cpu-by-removing-device-0">Execute the detection script. The following command runs the detection on the test video using the GPU (or using only CPU by removing –device 0).</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#install-dependencies">2. Install Dependencies 📦</a></li>
+<li><a class="reference internal" href="#run-detection">3. Run Detection ▶️</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#action-recognition">Action Recognition 🏃</a></li>
@@ -244,46 +234,39 @@
 <h2>Installation and Execution 🚀<a class="headerlink" href="#installation-and-execution" title="Link to this heading"></a></h2>
 <section id="navigate-to-your-project-directory">
 <h3>0. Navigate to Your Project Directory 📂<a class="headerlink" href="#navigate-to-your-project-directory" title="Link to this heading"></a></h3>
-<section id="first-open-your-command-line-interface-e-g-command-prompt-powershell-terminal-anaconda-prompt-and-navigate-to-the-project-s-root-folder-replace-c-path-to-folder-with-the-actual-path-to-your-object-detection-folder">
-<h4>First, open your command line interface (e.g., Command Prompt, PowerShell, Terminal, Anaconda Prompt) and navigate to the project’s root folder. Replace <cite>C:path_to_folder</cite> with the actual path to your Object Detection folder.<a class="headerlink" href="#first-open-your-command-line-interface-e-g-command-prompt-powershell-terminal-anaconda-prompt-and-navigate-to-the-project-s-root-folder-replace-c-path-to-folder-with-the-actual-path-to-your-object-detection-folder" title="Link to this heading"></a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>C:<span class="se">\p</span>ath_to_project
+<p>First, open your command line interface (e.g., Command Prompt, PowerShell, Terminal, Anaconda Prompt) and navigate to the project’s root folder. Replace <cite>C:path_to_folder</cite> with the actual path to your Object Detection folder.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>C:<span class="se">\p</span>ath_to_folder
 </pre></div>
 </div>
-</section>
 </section>
 <section id="create-a-virtual-environment-recommended-choose-one-of-the-following-methods">
 <h3>1. Create a Virtual Environment (Recommended) (Choose <strong>one</strong> of the following methods) 🐍:<a class="headerlink" href="#create-a-virtual-environment-recommended-choose-one-of-the-following-methods" title="Link to this heading"></a></h3>
 <blockquote>
-<div><ul class="simple">
-<li><p><strong>Using `venv` (Python’s built-in)</strong>:</p></li>
-</ul>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+<div><ul>
+<li><p><strong>Using `venv` (Python’s built-in)</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
 </pre></div>
 </div>
-<ul class="simple">
-<li><p>On Windows:</p></li>
-</ul>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>venv<span class="se">\S</span>cripts<span class="se">\a</span>ctivate
-</pre></div>
-</div>
-</div></blockquote>
-<ul class="simple">
-<li><p>On macOS/Linux:</p></li>
-</ul>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>venv/bin/activate
-</pre></div>
-</div>
-</div></blockquote>
-</div></blockquote>
+<p>Activate the environment:</p>
 <ul>
+<li><p>On Windows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>venv<span class="se">\S</span>cripts<span class="se">\a</span>ctivate
+</pre></div>
+</div>
+</li>
+<li><p>On macOS/Linux:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>venv/bin/activate
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
 <li><p><strong>Using `conda` (Anaconda/Miniconda)</strong>:
 Replace <cite>myenv</cite> with your desired environment name and your preferred compatible version of python (3.1X).</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>--name<span class="w"> </span>myenv<span class="w"> </span>python
 </pre></div>
 </div>
+<p>Activate the Conda environment:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>activate<span class="w"> </span>myenv
 </pre></div>
 </div>
@@ -293,26 +276,21 @@ Replace <cite>myenv</cite> with your desired environment name and your preferred
 </section>
 <section id="install-dependencies">
 <h3>2. Install Dependencies 📦<a class="headerlink" href="#install-dependencies" title="Link to this heading"></a></h3>
-<section id="ensure-your-pip-is-up-to-date-if-using-venv-or-pip-within-conda-and-then-install-the-required-packages">
-<h4>Ensure your <cite>pip</cite> is up to date (if using <cite>venv</cite> or pip within Conda) and then install the required packages.<a class="headerlink" href="#ensure-your-pip-is-up-to-date-if-using-venv-or-pip-within-conda-and-then-install-the-required-packages" title="Link to this heading"></a></h4>
+<p>Ensure your <cite>pip</cite> is up to date (if using <cite>venv</cite> or pip within Conda) and then install the required packages.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
 pip<span class="w"> </span>install<span class="w"> </span><span class="nv">ultralytics</span><span class="o">==</span>XX.XX.XX<span class="w"> </span>opencv-python<span class="o">==</span>XX.XX.XX
 </pre></div>
 </div>
-</section>
-<section id="if-using-conda-you-might-prefer-to-install-packages-using-conda-where-possible-for-example">
-<h4><em>If using Conda, you might prefer to install packages using Conda where possible, for example:</em><a class="headerlink" href="#if-using-conda-you-might-prefer-to-install-packages-using-conda-where-possible-for-example" title="Link to this heading"></a></h4>
+<p><em>If using Conda, you might prefer to install packages using Conda where possible, for example:</em></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># conda install anaconda # For a fuller anaconda distribution within the environment if needed</span>
 <span class="c1"># conda install pip # To ensure pip is available in the conda env</span>
 <span class="c1"># pip install ultralytics==XX.XX.XX opencv-python==XX.XX.XX</span>
 </pre></div>
 </div>
 </section>
-</section>
 <section id="run-detection">
 <h3>3. Run Detection ▶️<a class="headerlink" href="#run-detection" title="Link to this heading"></a></h3>
-<section id="execute-the-detection-script-the-following-command-runs-the-detection-on-the-test-video-using-the-gpu-or-using-only-cpu-by-removing-device-0">
-<h4>Execute the detection script. The following command runs the detection on the test video using the GPU (or using only CPU by removing –device 0).<a class="headerlink" href="#execute-the-detection-script-the-following-command-runs-the-detection-on-the-test-video-using-the-gpu-or-using-only-cpu-by-removing-device-0" title="Link to this heading"></a></h4>
+<p>Execute the detection script. The following command runs the detection on the test video using the GPU (or using only CPU by removing –device 0).</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>yolo_detect.py<span class="w"> </span>--model<span class="w"> </span>best.pt<span class="w"> </span>--source<span class="w"> </span>test.mp4<span class="w"> </span>--resolution<span class="w"> </span>1280x720<span class="w"> </span>--device<span class="w"> </span><span class="m">0</span>
 </pre></div>
 </div>
@@ -323,7 +301,6 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="nv">ultra
 <li><p><code class="docutils literal notranslate"><span class="pre">--device</span> <span class="pre">0</span></code>: This command will let the test run on GPU, you can delete it if you want to use only CPU.</p></li>
 </ul>
 <p>—</p>
-</section>
 </section>
 </section>
 <section id="action-recognition">
