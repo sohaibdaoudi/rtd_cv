@@ -1,0 +1,1057 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VI – Assistant Algorithm &mdash; Changing flat tyre assistant  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="VII - Usage" href="7_Installation_And_Usage.html" />
+    <link rel="prev" title="IV- Voice Assistant" href="5_Assistant_chatbot.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Changing flat tyre assistant
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table des matières:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="1_Introduction.html">I-Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_Team.html">II. Team</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_Action_recognition.html">III. Action Recognition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_Object_detection.html">III-Object Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_Assistant_chatbot.html">IV- Voice Assistant</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">VI – Assistant Algorithm</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#loading-models">0. Loading Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#object-detection-phase">1. Object Detection Phase</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#step-1-detecting-the-flat-tire">Step 1: Detecting the Flat Tire</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2-detecting-required-tools">Step 2: Detecting Required Tools</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#action-recognition-phase">2. Action Recognition Phase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#complete-runnable-script">3. Complete Runnable Script</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="7_Installation_And_Usage.html">VII - Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="8_perspectives.html">VIII – Future Enhancements</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Changing flat tyre assistant</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">VI – Assistant Algorithm</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/Documentation/Scripts/6_Algorithme.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="vi-assistant-algorithm">
+<h1>VI – Assistant Algorithm<a class="headerlink" href="#vi-assistant-algorithm" title="Link to this heading"></a></h1>
+<p>With both the action recognition and object detection models in place, we can now define the assistant’s logic for guiding a user through changing a flat tire.</p>
+<section id="loading-models">
+<h2>0. Loading Models<a class="headerlink" href="#loading-models" title="Link to this heading"></a></h2>
+<p>At the start of the session, the assistant loads the required models into memory:</p>
+<ul class="simple">
+<li><p>The <strong>object detection model</strong> for flat tire detection (<cite>flatV2.pt</cite>).</p></li>
+<li><p>The <strong>object detection model</strong> for tool detection (<cite>toolsV2.pt</cite>).</p></li>
+<li><p>The <strong>action recognition model</strong> (used later for guiding and verifying user actions).</p></li>
+</ul>
+<p>This ensures faster runtime and avoids delays during the step-by-step assistance process.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Model Paths ---</span>
+<span class="n">flat_tire_model_path</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;C:\Users\SOHAIB\Desktop\Projects\COMPUTER VISION\Last models\flatV2.pt&quot;</span>
+<span class="n">tools_model_path</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;C:\Users\SOHAIB\Desktop\Projects\COMPUTER VISION\Last models\toolsV2.pt&quot;</span>
+<span class="n">action_weights_path</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;C:\Users\SOHAIB\Desktop\Projects\COMPUTER VISION\Last models\realtimemovinet\Streaming\streaming_movinet_weights.h5&#39;</span>
+<span class="n">action_config_path</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;C:\Users\SOHAIB\Desktop\Projects\COMPUTER VISION\Last models\realtimemovinet\Streaming\streaming_model_config.json&#39;</span>
+
+<span class="c1"># --- State Machine Initialization ---</span>
+<span class="n">app_state</span> <span class="o">=</span> <span class="n">STATE_DETECTING_FLAT_TIRE</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;INFO: Initial state: </span><span class="si">{</span><span class="n">app_state</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Load initial model (flat tire detection)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">YOLO</span><span class="p">(</span><span class="n">flat_tire_model_path</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="s1">&#39;detect&#39;</span><span class="p">)</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">names</span>
+
+<span class="c1"># Action recognizer is initialized later to save memory</span>
+<span class="n">action_recognizer</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+<section id="object-detection-phase">
+<h2>1. Object Detection Phase<a class="headerlink" href="#object-detection-phase" title="Link to this heading"></a></h2>
+<section id="step-1-detecting-the-flat-tire">
+<h3>Step 1: Detecting the Flat Tire<a class="headerlink" href="#step-1-detecting-the-flat-tire" title="Link to this heading"></a></h3>
+<p>The assistant begins by continuously analyzing frames from the user’s camera using the YOLO model (<cite>flatV2.pt</cite>). If an object with the class <code class="docutils literal notranslate"><span class="pre">Flat_tire</span></code> is detected, a green bounding box is drawn around it. To reduce false positives, a <strong>validation timer</strong> starts only if the flat tire is continuously visible for <strong>5 seconds</strong>. If the tire disappears, a <strong>grace period</strong> of <strong>2.5 seconds</strong> begins, allowing the timer to resume if the tire reappears. Once validated, the system displays <strong>“Flat Tire Confirmed!”</strong> and proceeds.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- STATE: DETECTING_FLAT_TIRE ---</span>
+<span class="k">if</span> <span class="n">app_state</span> <span class="o">==</span> <span class="n">STATE_DETECTING_FLAT_TIRE</span><span class="p">:</span>
+    <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="s2">&quot;STEP 1: Find the Flat Tire&quot;</span><span class="p">,</span>
+                    <span class="n">Y_OFFSET_STEP_TITLE</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
+
+    <span class="c1"># Run detection</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">conf</span><span class="o">=</span><span class="n">TOOLS_CONFIDENCE_THRESHOLD</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">torch_device</span><span class="p">)</span>
+    <span class="n">current_detections</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">boxes</span> <span class="k">if</span> <span class="n">results</span> <span class="ow">and</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">boxes</span> <span class="k">else</span> <span class="p">[]</span>
+
+    <span class="n">found_flat_tire</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">det</span> <span class="ow">in</span> <span class="n">current_detections</span><span class="p">:</span>
+        <span class="n">class_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">det</span><span class="o">.</span><span class="n">cls</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+        <span class="n">class_name</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">class_id</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;ID:</span><span class="si">{</span><span class="n">class_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">class_name</span> <span class="o">==</span> <span class="n">FLAT_TIRE_CLASS_NAME</span><span class="p">:</span>
+            <span class="n">found_flat_tire</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">conf</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+            <span class="n">xyxy</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">xyxy</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+            <span class="c1"># Draw bounding box</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xyxy</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                          <span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">xyxy</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">conf</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                        <span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xyxy</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">10</span><span class="p">),</span>
+                        <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_SIMPLEX</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">break</span>
+
+    <span class="k">if</span> <span class="n">found_flat_tire</span><span class="p">:</span>
+        <span class="c1"># Reset lost timer if re-acquired</span>
+        <span class="k">if</span> <span class="n">flat_tire_lost_temporarily_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">flat_tire_lost_temporarily_time</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Start validation timer if not already running</span>
+        <span class="k">if</span> <span class="n">flat_tire_validation_start_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">flat_tire_validation_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="c1"># Check validation duration</span>
+        <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">flat_tire_validation_start_time</span>
+        <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&gt;=</span> <span class="n">VALIDATION_DURATION_SEC</span><span class="p">:</span>
+            <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="s2">&quot;Flat Tire Confirmed!&quot;</span><span class="p">,</span>
+                            <span class="n">Y_OFFSET_STATUS_VALIDATION</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s1">&#39;Tire Assistant&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1500</span><span class="p">)</span>
+
+            <span class="c1"># Transition to next state</span>
+            <span class="n">app_state</span> <span class="o">=</span> <span class="n">STATE_COLLECTING_TOOLS</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">YOLO</span><span class="p">(</span><span class="n">tools_model_path</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="s1">&#39;detect&#39;</span><span class="p">)</span> <span class="c1"># Switch to tools model</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">names</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: Transitioned to COLLECTING_TOOLS state&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span>
+                            <span class="sa">f</span><span class="s2">&quot;Confirming Flat Tire... </span><span class="si">{</span><span class="n">VALIDATION_DURATION_SEC</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">,</span>
+                            <span class="n">Y_OFFSET_STATUS_VALIDATION</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Handle temporary loss (Grace Period)</span>
+        <span class="k">if</span> <span class="n">flat_tire_validation_start_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">flat_tire_lost_temporarily_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">flat_tire_lost_temporarily_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+            <span class="n">time_since_lost</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">flat_tire_lost_temporarily_time</span>
+            <span class="k">if</span> <span class="n">time_since_lost</span> <span class="o">&lt;</span> <span class="n">GRACE_PERIOD_DURATION_SEC</span><span class="p">:</span>
+                <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span>
+                                <span class="sa">f</span><span class="s2">&quot;Searching... </span><span class="si">{</span><span class="n">GRACE_PERIOD_DURATION_SEC</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">time_since_lost</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">,</span>
+                                <span class="n">Y_OFFSET_STATUS_VALIDATION</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Reset timer if grace period is exceeded</span>
+                <span class="n">flat_tire_validation_start_time</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">flat_tire_lost_temporarily_time</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="s2">&quot;Point camera at the tire&quot;</span><span class="p">,</span>
+                                <span class="n">Y_OFFSET_MAIN_INSTRUCTION</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="s2">&quot;Point camera at the tire&quot;</span><span class="p">,</span>
+                            <span class="n">Y_OFFSET_MAIN_INSTRUCTION</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-2-detecting-required-tools">
+<h3>Step 2: Detecting Required Tools<a class="headerlink" href="#step-2-detecting-required-tools" title="Link to this heading"></a></h3>
+<p>The YOLO model is switched to <code class="docutils literal notranslate"><span class="pre">toolsV2.pt</span></code> to recognize the <code class="docutils literal notranslate"><span class="pre">Car_Jack</span></code> and <code class="docutils literal notranslate"><span class="pre">Wheel_Wrench</span></code>. Each tool is monitored independently with the same 5-second validation timer and 2.5-second grace period. The interface shows real-time updates, indicating which tools are <strong>“Confirmed”</strong> and which are <strong>“Needed”</strong>. Once all tools are confirmed, the system transitions to the next phase.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- STATE: COLLECTING_TOOLS (SIMULTANEOUS VALIDATION) ---</span>
+<span class="k">elif</span> <span class="n">app_state</span> <span class="o">==</span> <span class="n">STATE_COLLECTING_TOOLS</span><span class="p">:</span>
+    <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="s2">&quot;STEP 2: Collect Required Tools&quot;</span><span class="p">,</span>
+                    <span class="n">Y_OFFSET_STEP_TITLE</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
+
+    <span class="c1"># Run detection</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">conf</span><span class="o">=</span><span class="n">TOOLS_CONFIDENCE_THRESHOLD</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">torch_device</span><span class="p">)</span>
+    <span class="n">current_yolo_detections</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">boxes</span> <span class="k">if</span> <span class="n">results</span> <span class="ow">and</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">boxes</span> <span class="k">else</span> <span class="p">[]</span>
+
+    <span class="n">detected_tools_in_frame_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">det</span> <span class="ow">in</span> <span class="n">current_yolo_detections</span><span class="p">:</span>
+        <span class="n">classidx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">det</span><span class="o">.</span><span class="n">cls</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+        <span class="n">classname</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">classidx</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;ID:</span><span class="si">{</span><span class="n">classidx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">classname</span> <span class="ow">in</span> <span class="n">REQUIRED_TOOLS_CLASSES</span><span class="p">:</span>
+            <span class="n">detected_tools_in_frame_names</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">classname</span><span class="p">)</span>
+            <span class="c1"># ... (Drawing logic) ...</span>
+
+    <span class="c1"># Check if all tools are collected</span>
+    <span class="k">if</span> <span class="n">confirmed_tools</span> <span class="o">==</span> <span class="n">REQUIRED_TOOLS_CLASSES</span><span class="p">:</span>
+        <span class="n">app_state</span> <span class="o">=</span> <span class="n">STATE_ACTION_RECOGNITION</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: Transitioned to ACTION_RECOGNITION state&quot;</span><span class="p">)</span>
+        <span class="k">continue</span>
+
+    <span class="c1"># Simultaneous validation for all tools</span>
+    <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">REQUIRED_TOOLS_CLASSES</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">confirmed_tools</span><span class="p">:</span>
+            <span class="k">continue</span>  <span class="c1"># Skip already confirmed tools</span>
+
+        <span class="k">if</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">detected_tools_in_frame_names</span><span class="p">:</span>
+            <span class="c1"># Tool detected in this frame</span>
+            <span class="k">if</span> <span class="n">tool_validation_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Start validation timer</span>
+                <span class="n">tool_validation_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                <span class="n">tool_lost_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Continue validation</span>
+                <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">tool_validation_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&gt;=</span> <span class="n">VALIDATION_DURATION_SEC</span><span class="p">:</span>
+                    <span class="c1"># Tool confirmed</span>
+                    <span class="n">confirmed_tools</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tool</span><span class="p">)</span>
+                    <span class="n">tool_validation_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Tool not detected</span>
+            <span class="k">if</span> <span class="n">tool_validation_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">tool_lost_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># Start lost timer</span>
+                    <span class="n">tool_lost_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Check grace period</span>
+                    <span class="n">time_since_lost</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">tool_lost_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">time_since_lost</span> <span class="o">&gt;=</span> <span class="n">GRACE_PERIOD_DURATION_SEC</span><span class="p">:</span>
+                        <span class="c1"># Tool lost, reset validation</span>
+                        <span class="n">tool_validation_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="n">tool_lost_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Display collected and needed tools</span>
+    <span class="n">still_needed_tools</span> <span class="o">=</span> <span class="n">REQUIRED_TOOLS_CLASSES</span> <span class="o">-</span> <span class="n">confirmed_tools</span>
+    <span class="k">if</span> <span class="n">confirmed_tools</span><span class="p">:</span>
+        <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Collected: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">confirmed_tools</span><span class="p">)))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">Y_OFFSET_COLLECTED_LIST</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">still_needed_tools</span><span class="p">:</span>
+        <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Needed: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">still_needed_tools</span><span class="p">)))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">Y_OFFSET_NEEDED_LIST</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="action-recognition-phase">
+<h2>2. Action Recognition Phase<a class="headerlink" href="#action-recognition-phase" title="Link to this heading"></a></h2>
+<p>The assistant now switches to the action recognition model (MoViNet) to guide the user through the 9 steps of changing the tire.</p>
+<p><strong>Process</strong></p>
+<p><strong>Initialization</strong></p>
+<p>The <cite>RealTimeActionRecognizer</cite> class is initialized, and the MoViNet model is loaded. A background thread <cite>inference_thread</cite> is started to handle predictions asynchronously, preventing lag in the main UI thread.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- STATE: ACTION_RECOGNITION ---</span>
+<span class="k">elif</span> <span class="n">app_state</span> <span class="o">==</span> <span class="n">STATE_ACTION_RECOGNITION</span><span class="p">:</span>
+    <span class="c1"># Initialize action recognition on first entry</span>
+    <span class="k">if</span> <span class="n">action_recognizer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: Initializing action recognition system&quot;</span><span class="p">)</span>
+        <span class="n">action_recognizer</span> <span class="o">=</span> <span class="n">RealTimeActionRecognizer</span><span class="p">(</span><span class="n">action_weights_path</span><span class="p">,</span> <span class="n">action_config_path</span><span class="p">)</span>
+
+        <span class="c1"># Setup async processing</span>
+        <span class="n">movinet_input_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">movinet_output_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">movinet_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span>
+            <span class="n">target</span><span class="o">=</span><span class="n">inference_thread</span><span class="p">,</span>
+            <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">action_recognizer</span><span class="p">,</span> <span class="n">movinet_input_queue</span><span class="p">,</span> <span class="n">movinet_output_queue</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">movinet_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">movinet_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="n">current_action_step</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">action_validation_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting action validation for: </span><span class="si">{</span><span class="n">ACTION_STEPS</span><span class="p">[</span><span class="n">current_action_step</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Step-by-Step Guidance &amp; Frame Processing</strong></p>
+<p>The program follows a predefined list <cite>ACTION_STEPS</cite>. The main loop captures frames, sends them to <cite>movinet_input_queue</cite> for background processing, and checks <cite>movinet_output_queue</cite> for new predictions.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Display current step</span>
+<span class="n">step_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;STEP </span><span class="si">{</span><span class="n">current_action_step</span><span class="o">+</span><span class="mi">3</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">ACTION_STEPS</span><span class="p">[</span><span class="n">current_action_step</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">step_title</span><span class="p">,</span> <span class="n">Y_OFFSET_STEP_TITLE</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>
+
+<span class="c1"># Format and submit frame for processing</span>
+<span class="n">formatted_frame</span> <span class="o">=</span> <span class="n">action_recognizer</span><span class="o">.</span><span class="n">format_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">movinet_input_queue</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">movinet_input_queue</span><span class="o">.</span><span class="n">put_nowait</span><span class="p">(</span><span class="n">formatted_frame</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">queue</span><span class="o">.</span><span class="n">Full</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+<span class="c1"># Get latest prediction</span>
+<span class="n">prediction</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">prediction</span> <span class="o">=</span> <span class="n">movinet_output_queue</span><span class="o">.</span><span class="n">get_nowait</span><span class="p">()</span>
+<span class="k">except</span> <span class="n">queue</span><span class="o">.</span><span class="n">Empty</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p><strong>Action Validation</strong></p>
+<p>When a prediction is available, it’s compared to the expected action. If it matches and the confidence is above <cite>0.6</cite>, a validation counter increases. A step is considered complete only after being recognized for <cite>15</cite> consecutive frames.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Process prediction</span>
+<span class="k">if</span> <span class="n">prediction</span><span class="p">:</span>
+    <span class="n">current_confidence</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="s1">&#39;confidence&#39;</span><span class="p">]</span>
+    <span class="n">current_action</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="s1">&#39;smoothed_prediction&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Display prediction info</span>
+    <span class="n">pred_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Action: </span><span class="si">{</span><span class="n">current_action</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">current_confidence</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">)&quot;</span>
+    <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">pred_text</span><span class="p">,</span> <span class="n">Y_OFFSET_MAIN_INSTRUCTION</span><span class="p">,</span>
+                    <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="n">current_action</span> <span class="o">==</span> <span class="n">ACTION_STEPS</span><span class="p">[</span><span class="n">current_action_step</span><span class="p">]</span> <span class="k">else</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+
+    <span class="c1"># Validate current step</span>
+    <span class="k">if</span> <span class="n">current_action</span> <span class="o">==</span> <span class="n">ACTION_STEPS</span><span class="p">[</span><span class="n">current_action_step</span><span class="p">]</span> <span class="ow">and</span> <span class="n">current_confidence</span> <span class="o">&gt;=</span> <span class="n">ACTION_CONFIDENCE_THRESHOLD</span><span class="p">:</span>
+        <span class="n">action_validation_count</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">action_validation_count</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">action_validation_count</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Display validation progress</span>
+<span class="n">progress_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Validation: </span><span class="si">{</span><span class="n">action_validation_count</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">ACTION_VALIDATION_FRAMES</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">progress_text</span><span class="p">,</span> <span class="n">Y_OFFSET_ACTION_PROGRESS</span><span class="p">,</span>
+                <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span> <span class="k">if</span> <span class="n">action_validation_count</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">165</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><strong>Completing a Step, Looping, and Final Message</strong></p>
+<p>When validation reaches 15 frames, <strong>`”Step Completed!”`</strong> is shown, <cite>current_action_step</cite> is incremented, and MoViNet’s state is reset. This process loops through all 9 steps. After the last step, <strong>`”ALL STEPS COMPLETED!”`</strong> is shown, and the program exits.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check if step is completed</span>
+<span class="k">if</span> <span class="n">action_validation_count</span> <span class="o">&gt;=</span> <span class="n">ACTION_VALIDATION_FRAMES</span><span class="p">:</span>
+    <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="s2">&quot;Step Completed!&quot;</span><span class="p">,</span>
+                    <span class="n">Y_OFFSET_CONFIRMATION_MSG</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s1">&#39;Tire Assistant&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+    <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1500</span><span class="p">)</span>
+
+    <span class="c1"># Move to next step</span>
+    <span class="n">current_action_step</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">action_validation_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># Check if all steps are completed</span>
+    <span class="k">if</span> <span class="n">current_action_step</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ACTION_STEPS</span><span class="p">):</span>
+        <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="s2">&quot;ALL STEPS COMPLETED!&quot;</span><span class="p">,</span>
+                        <span class="n">Y_OFFSET_MAIN_INSTRUCTION</span><span class="p">,</span>
+                        <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">font_scale</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s1">&#39;Tire Assistant&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">3000</span><span class="p">)</span>
+        <span class="k">break</span>
+
+    <span class="c1"># Reset states for new action</span>
+    <span class="n">action_recognizer</span><span class="o">.</span><span class="n">reset_states</span><span class="p">()</span>
+    <span class="n">last_prediction_confidence</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting action validation for: </span><span class="si">{</span><span class="n">ACTION_STEPS</span><span class="p">[</span><span class="n">current_action_step</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<hr></section>
+<section id="complete-runnable-script">
+<h2>3. Complete Runnable Script<a class="headerlink" href="#complete-runnable-script" title="Link to this heading"></a></h2>
+<p>Here is the entire script.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="linenos">  2</span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="linenos">  3</span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="linenos">  4</span><span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
+<span class="linenos">  5</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos">  6</span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="linenos">  7</span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="linenos">  8</span><span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+<span class="linenos">  9</span><span class="kn">import</span><span class="w"> </span><span class="nn">queue</span>
+<span class="linenos"> 10</span><span class="kn">import</span><span class="w"> </span><span class="nn">tensorflow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tf</span>
+<span class="linenos"> 11</span><span class="kn">from</span><span class="w"> </span><span class="nn">ultralytics</span><span class="w"> </span><span class="kn">import</span> <span class="n">YOLO</span>
+<span class="linenos"> 12</span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span><span class="p">,</span> <span class="n">Counter</span>
+<span class="linenos"> 13</span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="linenos"> 14</span>
+<span class="linenos"> 15</span><span class="c1"># --- MoViNet Integration ---</span>
+<span class="linenos"> 16</span><span class="k">try</span><span class="p">:</span>
+<span class="linenos"> 17</span>    <span class="kn">from</span><span class="w"> </span><span class="nn">official.projects.movinet.modeling</span><span class="w"> </span><span class="kn">import</span> <span class="n">movinet</span>
+<span class="linenos"> 18</span>    <span class="kn">from</span><span class="w"> </span><span class="nn">official.projects.movinet.modeling</span><span class="w"> </span><span class="kn">import</span> <span class="n">movinet_model</span>
+<span class="linenos"> 19</span><span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+<span class="linenos"> 20</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">60</span><span class="p">)</span>
+<span class="linenos"> 21</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING: Could not import MoViNet components.&quot;</span><span class="p">)</span>
+<span class="linenos"> 22</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Action recognition will be disabled.&quot;</span><span class="p">)</span>
+<span class="linenos"> 23</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">60</span><span class="p">)</span>
+<span class="linenos"> 24</span>
+<span class="linenos"> 25</span><span class="k">class</span><span class="w"> </span><span class="nc">RealTimeActionRecognizer</span><span class="p">:</span>
+<span class="linenos"> 26</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights_path</span><span class="p">,</span> <span class="n">config_path</span><span class="p">):</span>
+<span class="linenos"> 27</span>        <span class="bp">self</span><span class="o">.</span><span class="n">weights_path</span> <span class="o">=</span> <span class="n">weights_path</span>
+<span class="linenos"> 28</span>        <span class="bp">self</span><span class="o">.</span><span class="n">config_path</span> <span class="o">=</span> <span class="n">config_path</span>
+<span class="linenos"> 29</span>
+<span class="linenos"> 30</span>        <span class="c1"># Load configuration</span>
+<span class="linenos"> 31</span>        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="linenos"> 32</span>            <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="linenos"> 33</span>
+<span class="linenos"> 34</span>        <span class="bp">self</span><span class="o">.</span><span class="n">model_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;model_id&#39;</span><span class="p">]</span>
+<span class="linenos"> 35</span>        <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;num_classes&#39;</span><span class="p">]</span>
+<span class="linenos"> 36</span>        <span class="bp">self</span><span class="o">.</span><span class="n">resolution</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">]</span>
+<span class="linenos"> 37</span>        <span class="bp">self</span><span class="o">.</span><span class="n">class_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;class_names&#39;</span><span class="p">]</span>
+<span class="linenos"> 38</span>
+<span class="linenos"> 39</span>        <span class="c1"># Initialize model and states</span>
+<span class="linenos"> 40</span>        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos"> 41</span>        <span class="bp">self</span><span class="o">.</span><span class="n">states</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos"> 42</span>        <span class="bp">self</span><span class="o">.</span><span class="n">prediction_history</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="n">maxlen</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="linenos"> 43</span>        <span class="bp">self</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>
+<span class="linenos"> 44</span>
+<span class="linenos"> 45</span>    <span class="k">def</span><span class="w"> </span><span class="nf">load_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos"> 46</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Load and initialize the streaming model.&quot;&quot;&quot;</span>
+<span class="linenos"> 47</span>        <span class="k">try</span><span class="p">:</span>
+<span class="linenos"> 48</span>            <span class="n">streaming_backbone</span> <span class="o">=</span> <span class="n">movinet</span><span class="o">.</span><span class="n">Movinet</span><span class="p">(</span>
+<span class="linenos"> 49</span>                <span class="n">model_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_id</span><span class="p">,</span>
+<span class="linenos"> 50</span>                <span class="n">causal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="linenos"> 51</span>                <span class="n">use_external_states</span><span class="o">=</span><span class="kc">True</span>
+<span class="linenos"> 52</span>            <span class="p">)</span>
+<span class="linenos"> 53</span>
+<span class="linenos"> 54</span>            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">movinet_model</span><span class="o">.</span><span class="n">MovinetClassifier</span><span class="p">(</span>
+<span class="linenos"> 55</span>                <span class="n">backbone</span><span class="o">=</span><span class="n">streaming_backbone</span><span class="p">,</span>
+<span class="linenos"> 56</span>                <span class="n">num_classes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">,</span>
+<span class="linenos"> 57</span>                <span class="n">output_states</span><span class="o">=</span><span class="kc">True</span>
+<span class="linenos"> 58</span>            <span class="p">)</span>
+<span class="linenos"> 59</span>
+<span class="linenos"> 60</span>            <span class="c1"># Build model</span>
+<span class="linenos"> 61</span>            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">build</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolution</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolution</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="linenos"> 62</span>            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">load_weights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_path</span><span class="p">)</span>
+<span class="linenos"> 63</span>            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✅ MoViNet model loaded successfully&quot;</span><span class="p">)</span>
+<span class="linenos"> 64</span>            <span class="bp">self</span><span class="o">.</span><span class="n">reset_states</span><span class="p">()</span>
+<span class="linenos"> 65</span>            <span class="k">return</span> <span class="kc">True</span>
+<span class="linenos"> 66</span>        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<span class="linenos"> 67</span>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error loading MoViNet: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos"> 68</span>            <span class="k">return</span> <span class="kc">False</span>
+<span class="linenos"> 69</span>
+<span class="linenos"> 70</span>    <span class="k">def</span><span class="w"> </span><span class="nf">reset_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos"> 71</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset model states.&quot;&quot;&quot;</span>
+<span class="linenos"> 72</span>        <span class="n">dummy_frame_shape</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolution</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolution</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="linenos"> 73</span>        <span class="bp">self</span><span class="o">.</span><span class="n">states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">init_states</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">TensorShape</span><span class="p">(</span><span class="n">dummy_frame_shape</span><span class="p">))</span>
+<span class="linenos"> 74</span>        <span class="bp">self</span><span class="o">.</span><span class="n">prediction_history</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+<span class="linenos"> 75</span>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MoViNet states reset&quot;</span><span class="p">)</span>
+<span class="linenos"> 76</span>
+<span class="linenos"> 77</span>    <span class="k">def</span><span class="w"> </span><span class="nf">format_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+<span class="linenos"> 78</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Format frame for model input.&quot;&quot;&quot;</span>
+<span class="linenos"> 79</span>        <span class="n">frame_rgb</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2RGB</span><span class="p">)</span>
+<span class="linenos"> 80</span>        <span class="n">frame</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">convert_image_dtype</span><span class="p">(</span><span class="n">frame_rgb</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="linenos"> 81</span>        <span class="n">frame</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">resize_with_pad</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolution</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolution</span><span class="p">)</span>
+<span class="linenos"> 82</span>        <span class="k">return</span> <span class="n">frame</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+<span class="linenos"> 83</span>
+<span class="linenos"> 84</span>    <span class="k">def</span><span class="w"> </span><span class="nf">predict_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+<span class="linenos"> 85</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Predict action for a single formatted frame.&quot;&quot;&quot;</span>
+<span class="linenos"> 86</span>        <span class="k">try</span><span class="p">:</span>
+<span class="linenos"> 87</span>            <span class="n">input_frame</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+<span class="linenos"> 88</span>            <span class="n">logits</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict_on_batch</span><span class="p">((</span><span class="n">input_frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="p">))</span>
+<span class="linenos"> 89</span>
+<span class="linenos"> 90</span>            <span class="n">probabilities</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos"> 91</span>            <span class="n">predicted_class_id</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span>
+<span class="linenos"> 92</span>            <span class="n">confidence</span> <span class="o">=</span> <span class="n">probabilities</span><span class="p">[</span><span class="n">predicted_class_id</span><span class="p">]</span>
+<span class="linenos"> 93</span>            <span class="n">predicted_class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_names</span><span class="p">[</span><span class="n">predicted_class_id</span><span class="p">]</span>
+<span class="linenos"> 94</span>
+<span class="linenos"> 95</span>            <span class="bp">self</span><span class="o">.</span><span class="n">prediction_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">predicted_class_name</span><span class="p">)</span>
+<span class="linenos"> 96</span>            <span class="n">smoothed_prediction</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prediction_history</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos"> 97</span>
+<span class="linenos"> 98</span>            <span class="k">return</span> <span class="p">{</span>
+<span class="linenos"> 99</span>                <span class="s1">&#39;class_name&#39;</span><span class="p">:</span> <span class="n">predicted_class_name</span><span class="p">,</span>
+<span class="linenos">100</span>                <span class="s1">&#39;confidence&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">confidence</span><span class="p">),</span>
+<span class="linenos">101</span>                <span class="s1">&#39;smoothed_prediction&#39;</span><span class="p">:</span> <span class="n">smoothed_prediction</span><span class="p">,</span>
+<span class="linenos">102</span>                <span class="s1">&#39;all_probabilities&#39;</span><span class="p">:</span> <span class="n">probabilities</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="linenos">103</span>            <span class="p">}</span>
+<span class="linenos">104</span>        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<span class="linenos">105</span>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Prediction error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">106</span>            <span class="k">return</span> <span class="kc">None</span>
+<span class="linenos">107</span>
+<span class="linenos">108</span><span class="c1"># --- Application Constants ---</span>
+<span class="linenos">109</span><span class="n">FLAT_TIRE_CLASS_NAME</span> <span class="o">=</span> <span class="s2">&quot;Flat_tire&quot;</span>
+<span class="linenos">110</span><span class="n">REQUIRED_TOOLS_CLASSES</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Car_Jack&quot;</span><span class="p">,</span> <span class="s2">&quot;Wheel_Wrench&quot;</span><span class="p">}</span>
+<span class="linenos">111</span><span class="n">VALIDATION_DURATION_SEC</span> <span class="o">=</span> <span class="mf">5.0</span>
+<span class="linenos">112</span><span class="n">GRACE_PERIOD_DURATION_SEC</span> <span class="o">=</span> <span class="mf">2.5</span>
+<span class="linenos">113</span><span class="n">TOOLS_CONFIDENCE_THRESHOLD</span> <span class="o">=</span> <span class="mf">0.6</span>
+<span class="linenos">114</span>
+<span class="linenos">115</span><span class="n">ACTION_VALIDATION_FRAMES</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="linenos">116</span><span class="n">ACTION_CONFIDENCE_THRESHOLD</span> <span class="o">=</span> <span class="mf">0.6</span>
+<span class="linenos">117</span><span class="n">ACTION_CONFIDENCE_RESET_THRESHOLD</span> <span class="o">=</span> <span class="mf">0.3</span>  <span class="c1"># Reset when confidence drops below this</span>
+<span class="linenos">118</span>
+<span class="linenos">119</span><span class="c1"># --- Application States ---</span>
+<span class="linenos">120</span><span class="n">STATE_DETECTING_FLAT_TIRE</span> <span class="o">=</span> <span class="s2">&quot;DETECTING_FLAT_TIRE&quot;</span>
+<span class="linenos">121</span><span class="n">STATE_COLLECTING_TOOLS</span> <span class="o">=</span> <span class="s2">&quot;COLLECTING_TOOLS&quot;</span>
+<span class="linenos">122</span><span class="n">STATE_ACTION_RECOGNITION</span> <span class="o">=</span> <span class="s2">&quot;ACTION_RECOGNITION&quot;</span>
+<span class="linenos">123</span>
+<span class="linenos">124</span><span class="c1"># --- Action Steps ---</span>
+<span class="linenos">125</span><span class="n">ACTION_STEPS</span> <span class="o">=</span> <span class="p">[</span>
+<span class="linenos">126</span>    <span class="s2">&quot;loosen_bolts&quot;</span><span class="p">,</span>             <span class="c1"># Step 1 - Loosen bolts before lifting the car</span>
+<span class="linenos">127</span>    <span class="s2">&quot;lift_car_with_jack&quot;</span><span class="p">,</span>       <span class="c1"># Step 2 - Lift the car using the jack</span>
+<span class="linenos">128</span>    <span class="s2">&quot;remove_bolts&quot;</span><span class="p">,</span>             <span class="c1"># Step 3 - Remove bolts completely</span>
+<span class="linenos">129</span>    <span class="s2">&quot;remove_tire&quot;</span><span class="p">,</span>              <span class="c1"># Step 4 - Take off the flat tire</span>
+<span class="linenos">130</span>    <span class="s2">&quot;place_spare_tire&quot;</span><span class="p">,</span>         <span class="c1"># Step 5 - Place the spare tire on the hub</span>
+<span class="linenos">131</span>    <span class="s2">&quot;hand_tighten_bolts&quot;</span><span class="p">,</span>       <span class="c1"># Step 6 - Start tightening bolts by hand</span>
+<span class="linenos">132</span>    <span class="s2">&quot;initial_wrench_tighten&quot;</span><span class="p">,</span>   <span class="c1"># Step 7 - Lightly tighten bolts with wrench while car is up</span>
+<span class="linenos">133</span>    <span class="s2">&quot;lower_car&quot;</span><span class="p">,</span>                <span class="c1"># Step 8 - Lower the car back to the ground</span>
+<span class="linenos">134</span>    <span class="s2">&quot;tighten_bolts&quot;</span>             <span class="c1"># Step 9 - Fully tighten bolts after the car is lowered</span>
+<span class="linenos">135</span><span class="p">]</span>
+<span class="linenos">136</span>
+<span class="linenos">137</span><span class="c1"># --- Display Offsets ---</span>
+<span class="linenos">138</span><span class="n">Y_OFFSET_STEP_TITLE</span> <span class="o">=</span> <span class="mi">40</span>
+<span class="linenos">139</span><span class="n">Y_OFFSET_MAIN_INSTRUCTION</span> <span class="o">=</span> <span class="mi">75</span>
+<span class="linenos">140</span><span class="n">Y_OFFSET_STATUS_VALIDATION</span> <span class="o">=</span> <span class="mi">110</span>
+<span class="linenos">141</span><span class="n">Y_OFFSET_CONFIRMATION_MSG</span> <span class="o">=</span> <span class="mi">110</span>
+<span class="linenos">142</span><span class="n">Y_OFFSET_COLLECTED_LIST</span> <span class="o">=</span> <span class="mi">145</span>
+<span class="linenos">143</span><span class="n">Y_OFFSET_NEEDED_LIST</span> <span class="o">=</span> <span class="mi">180</span>
+<span class="linenos">144</span><span class="n">Y_OFFSET_ACTION_PROGRESS</span> <span class="o">=</span> <span class="mi">215</span>
+<span class="linenos">145</span><span class="n">Y_OFFSET_ACTION_STEP</span> <span class="o">=</span> <span class="mi">250</span>
+<span class="linenos">146</span>
+<span class="linenos">147</span><span class="k">def</span><span class="w"> </span><span class="nf">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">y_offset</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+<span class="linenos">148</span>                    <span class="n">font_scale</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bg_color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
+<span class="linenos">149</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Displays a message on the frame with a background.&quot;&quot;&quot;</span>
+<span class="linenos">150</span>    <span class="p">(</span><span class="n">text_width</span><span class="p">,</span> <span class="n">text_height</span><span class="p">),</span> <span class="n">baseline</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getTextSize</span><span class="p">(</span>
+<span class="linenos">151</span>        <span class="n">message</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_SIMPLEX</span><span class="p">,</span> <span class="n">font_scale</span><span class="p">,</span> <span class="n">thickness</span>
+<span class="linenos">152</span>    <span class="p">)</span>
+<span class="linenos">153</span>
+<span class="linenos">154</span>    <span class="n">padding_x</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="linenos">155</span>    <span class="n">padding_y</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="linenos">156</span>
+<span class="linenos">157</span>    <span class="n">rect_x</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="linenos">158</span>    <span class="n">rect_y</span> <span class="o">=</span> <span class="n">y_offset</span> <span class="o">-</span> <span class="n">text_height</span> <span class="o">-</span> <span class="n">padding_y</span>
+<span class="linenos">159</span>    <span class="n">rect_width</span> <span class="o">=</span> <span class="n">text_width</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">padding_x</span><span class="p">)</span>
+<span class="linenos">160</span>    <span class="n">rect_height</span> <span class="o">=</span> <span class="n">text_height</span> <span class="o">+</span> <span class="n">baseline</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">padding_y</span><span class="p">)</span>
+<span class="linenos">161</span>
+<span class="linenos">162</span>    <span class="k">if</span> <span class="n">rect_y</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+<span class="linenos">163</span>        <span class="n">rect_y</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos">164</span>        <span class="n">y_offset</span> <span class="o">=</span> <span class="n">text_height</span> <span class="o">+</span> <span class="n">padding_y</span>
+<span class="linenos">165</span>
+<span class="linenos">166</span>    <span class="k">if</span> <span class="n">rect_x</span> <span class="o">+</span> <span class="n">rect_width</span> <span class="o">&gt;</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">10</span><span class="p">:</span>
+<span class="linenos">167</span>        <span class="n">rect_width</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">10</span> <span class="o">-</span> <span class="n">rect_x</span>
+<span class="linenos">168</span>
+<span class="linenos">169</span>    <span class="c1"># Draw background</span>
+<span class="linenos">170</span>    <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">(</span><span class="n">rect_x</span><span class="p">,</span> <span class="n">rect_y</span><span class="p">),</span>
+<span class="linenos">171</span>                  <span class="p">(</span><span class="n">rect_x</span> <span class="o">+</span> <span class="n">rect_width</span><span class="p">,</span> <span class="n">rect_y</span> <span class="o">+</span> <span class="n">rect_height</span><span class="p">),</span>
+<span class="linenos">172</span>                  <span class="n">bg_color</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FILLED</span><span class="p">)</span>
+<span class="linenos">173</span>
+<span class="linenos">174</span>    <span class="c1"># Draw text</span>
+<span class="linenos">175</span>    <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="p">(</span><span class="n">rect_x</span> <span class="o">+</span> <span class="n">padding_x</span><span class="p">,</span> <span class="n">y_offset</span><span class="p">),</span>
+<span class="linenos">176</span>                <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_SIMPLEX</span><span class="p">,</span> <span class="n">font_scale</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">thickness</span><span class="p">)</span>
+<span class="linenos">177</span>
+<span class="linenos">178</span><span class="k">def</span><span class="w"> </span><span class="nf">inference_thread</span><span class="p">(</span><span class="n">recognizer</span><span class="p">,</span> <span class="n">input_queue</span><span class="p">,</span> <span class="n">output_queue</span><span class="p">):</span>
+<span class="linenos">179</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Worker thread for running model inference.&quot;&quot;&quot;</span>
+<span class="linenos">180</span>    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+<span class="linenos">181</span>        <span class="n">frame</span> <span class="o">=</span> <span class="n">input_queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="linenos">182</span>        <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># Termination signal</span>
+<span class="linenos">183</span>            <span class="k">break</span>
+<span class="linenos">184</span>
+<span class="linenos">185</span>        <span class="c1"># Run prediction</span>
+<span class="linenos">186</span>        <span class="n">prediction</span> <span class="o">=</span> <span class="n">recognizer</span><span class="o">.</span><span class="n">predict_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+<span class="linenos">187</span>        <span class="n">output_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">prediction</span><span class="p">)</span>
+<span class="linenos">188</span>
+<span class="linenos">189</span><span class="k">def</span><span class="w"> </span><span class="nf">main_orchestrator</span><span class="p">():</span>
+<span class="linenos">190</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Main function to run the integrated tire change assistant.&quot;&quot;&quot;</span>
+<span class="linenos">191</span>    <span class="c1"># --- GPU Verification ---</span>
+<span class="linenos">192</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;--- Verifying Processing Devices ---&quot;</span><span class="p">)</span>
+<span class="linenos">193</span>    <span class="c1"># PyTorch GPU check</span>
+<span class="linenos">194</span>    <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
+<span class="linenos">195</span>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✅ PyTorch: CUDA (GPU) available&quot;</span><span class="p">)</span>
+<span class="linenos">196</span>        <span class="n">torch_device</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+<span class="linenos">197</span>    <span class="k">else</span><span class="p">:</span>
+<span class="linenos">198</span>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;⚠️ PyTorch: Using CPU&quot;</span><span class="p">)</span>
+<span class="linenos">199</span>        <span class="n">torch_device</span> <span class="o">=</span> <span class="s2">&quot;cpu&quot;</span>
+<span class="linenos">200</span>
+<span class="linenos">201</span>    <span class="c1"># TensorFlow GPU check</span>
+<span class="linenos">202</span>    <span class="n">gpus</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">list_physical_devices</span><span class="p">(</span><span class="s1">&#39;GPU&#39;</span><span class="p">)</span>
+<span class="linenos">203</span>    <span class="k">if</span> <span class="n">gpus</span><span class="p">:</span>
+<span class="linenos">204</span>        <span class="k">try</span><span class="p">:</span>
+<span class="linenos">205</span>            <span class="k">for</span> <span class="n">gpu</span> <span class="ow">in</span> <span class="n">gpus</span><span class="p">:</span>
+<span class="linenos">206</span>                <span class="n">tf</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">set_memory_growth</span><span class="p">(</span><span class="n">gpu</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="linenos">207</span>            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✅ TensorFlow: GPU available&quot;</span><span class="p">)</span>
+<span class="linenos">208</span>        <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<span class="linenos">209</span>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;⚠️ TensorFlow GPU config error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">210</span>    <span class="k">else</span><span class="p">:</span>
+<span class="linenos">211</span>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;⚠️ TensorFlow: No GPU found, using CPU&quot;</span><span class="p">)</span>
+<span class="linenos">212</span>
+<span class="linenos">213</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;----------------------------------&quot;</span><span class="p">)</span>
+<span class="linenos">214</span>
+<span class="linenos">215</span>    <span class="c1"># --- Model Paths ---</span>
+<span class="linenos">216</span>    <span class="n">flat_tire_model_path</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;C:\Users\SOHAIB\Desktop\Projects\COMPUTER VISION\Last models\flatV2.pt&quot;</span>
+<span class="linenos">217</span>    <span class="n">tools_model_path</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;C:\Users\SOHAIB\Desktop\Projects\COMPUTER VISION\Last models\toolsV2.pt&quot;</span>
+<span class="linenos">218</span>    <span class="n">action_weights_path</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;C:\Users\SOHAIB\Desktop\Projects\COMPUTER VISION\Last models\realtimemovinet\Streaming\streaming_movinet_weights.h5&#39;</span>
+<span class="linenos">219</span>    <span class="n">action_config_path</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;C:\Users\SOHAIB\Desktop\Projects\COMPUTER VISION\Last models\realtimemovinet\Streaming\streaming_model_config.json&#39;</span>
+<span class="linenos">220</span>
+<span class="linenos">221</span>    <span class="c1"># Verify model paths</span>
+<span class="linenos">222</span>    <span class="n">model_paths</span> <span class="o">=</span> <span class="p">[</span>
+<span class="linenos">223</span>        <span class="n">flat_tire_model_path</span><span class="p">,</span>
+<span class="linenos">224</span>        <span class="n">tools_model_path</span><span class="p">,</span>
+<span class="linenos">225</span>        <span class="n">action_weights_path</span><span class="p">,</span>
+<span class="linenos">226</span>        <span class="n">action_config_path</span>
+<span class="linenos">227</span>    <span class="p">]</span>
+<span class="linenos">228</span>
+<span class="linenos">229</span>    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">model_paths</span><span class="p">:</span>
+<span class="linenos">230</span>        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="linenos">231</span>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: Model path not found: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">232</span>            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="linenos">233</span>
+<span class="linenos">234</span>    <span class="c1"># --- Input Source Selection ---</span>
+<span class="linenos">235</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">🎯 Choose Input Source:&quot;</span><span class="p">)</span>
+<span class="linenos">236</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. Webcam (local camera)&quot;</span><span class="p">)</span>
+<span class="linenos">237</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;2. Video File&quot;</span><span class="p">)</span>
+<span class="linenos">238</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;3. IP Camera (network stream)&quot;</span><span class="p">)</span>
+<span class="linenos">239</span>
+<span class="linenos">240</span>    <span class="n">choice</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter choice (1, 2, or 3): &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+<span class="linenos">241</span>
+<span class="linenos">242</span>    <span class="n">img_source</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">243</span>    <span class="k">if</span> <span class="n">choice</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span><span class="p">:</span>
+<span class="linenos">244</span>        <span class="n">img_source</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos">245</span>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: Selected Webcam.&quot;</span><span class="p">)</span>
+<span class="linenos">246</span>    <span class="k">elif</span> <span class="n">choice</span> <span class="o">==</span> <span class="s1">&#39;2&#39;</span><span class="p">:</span>
+<span class="linenos">247</span>        <span class="n">video_path</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter video file path: &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="linenos">248</span>        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">video_path</span><span class="p">):</span>
+<span class="linenos">249</span>            <span class="n">img_source</span> <span class="o">=</span> <span class="n">video_path</span>
+<span class="linenos">250</span>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;INFO: Selected Video File: </span><span class="si">{</span><span class="n">video_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">251</span>        <span class="k">else</span><span class="p">:</span>
+<span class="linenos">252</span>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: Video file not found: </span><span class="si">{</span><span class="n">video_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">253</span>            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="linenos">254</span>    <span class="k">elif</span> <span class="n">choice</span> <span class="o">==</span> <span class="s1">&#39;3&#39;</span><span class="p">:</span>
+<span class="linenos">255</span>        <span class="n">ip_url</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter IP Camera URL (e.g., http://192.168.43.1:8080/video): &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+<span class="linenos">256</span>        <span class="n">img_source</span> <span class="o">=</span> <span class="n">ip_url</span> <span class="ow">or</span> <span class="s2">&quot;http://192.168.43.1:8080/video&quot;</span>
+<span class="linenos">257</span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;INFO: Selected IP Camera: </span><span class="si">{</span><span class="n">img_source</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">258</span>    <span class="k">else</span><span class="p">:</span>
+<span class="linenos">259</span>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: Invalid choice&quot;</span><span class="p">)</span>
+<span class="linenos">260</span>        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="linenos">261</span>
+<span class="linenos">262</span>    <span class="c1"># --- Video Capture Setup ---</span>
+<span class="linenos">263</span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">INFO: Opening video source: </span><span class="si">{</span><span class="n">img_source</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">264</span>    <span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="n">img_source</span><span class="p">)</span>
+<span class="linenos">265</span>    <span class="k">if</span> <span class="ow">not</span> <span class="n">cap</span><span class="o">.</span><span class="n">isOpened</span><span class="p">():</span>
+<span class="linenos">266</span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ERROR: Unable to open video source: </span><span class="si">{</span><span class="n">img_source</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="linenos">267</span>        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="linenos">268</span>
+<span class="linenos">269</span>    <span class="c1"># Set resolution (640x480)</span>
+<span class="linenos">270</span>    <span class="n">cap</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_FRAME_WIDTH</span><span class="p">,</span> <span class="mi">640</span><span class="p">)</span>
+<span class="linenos">271</span>    <span class="n">cap</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_FRAME_HEIGHT</span><span class="p">,</span> <span class="mi">480</span><span class="p">)</span>
+<span class="linenos">272</span>    <span class="n">actual_width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_FRAME_WIDTH</span><span class="p">))</span>
+<span class="linenos">273</span>    <span class="n">actual_height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_FRAME_HEIGHT</span><span class="p">))</span>
+<span class="linenos">274</span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;INFO: Resolution set to: </span><span class="si">{</span><span class="n">actual_width</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="n">actual_height</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">275</span>
+<span class="linenos">276</span>    <span class="c1"># --- State Machine Initialization ---</span>
+<span class="linenos">277</span>    <span class="n">app_state</span> <span class="o">=</span> <span class="n">STATE_DETECTING_FLAT_TIRE</span>
+<span class="linenos">278</span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;INFO: Initial state: </span><span class="si">{</span><span class="n">app_state</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">279</span>
+<span class="linenos">280</span>    <span class="c1"># Load initial model (flat tire detection)</span>
+<span class="linenos">281</span>    <span class="n">model</span> <span class="o">=</span> <span class="n">YOLO</span><span class="p">(</span><span class="n">flat_tire_model_path</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="s1">&#39;detect&#39;</span><span class="p">)</span>
+<span class="linenos">282</span>    <span class="n">labels</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">names</span>
+<span class="linenos">283</span>
+<span class="linenos">284</span>    <span class="c1"># --- State Variables ---</span>
+<span class="linenos">285</span>    <span class="c1"># Flat tire detection</span>
+<span class="linenos">286</span>    <span class="n">flat_tire_validation_start_time</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">287</span>    <span class="n">flat_tire_lost_temporarily_time</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">288</span>
+<span class="linenos">289</span>    <span class="c1"># Tool collection (with simultaneous validation)</span>
+<span class="linenos">290</span>    <span class="n">confirmed_tools</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+<span class="linenos">291</span>    <span class="n">tool_validation_timers</span> <span class="o">=</span> <span class="p">{</span><span class="n">tool</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">REQUIRED_TOOLS_CLASSES</span><span class="p">}</span>
+<span class="linenos">292</span>    <span class="n">tool_lost_timers</span> <span class="o">=</span> <span class="p">{</span><span class="n">tool</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">REQUIRED_TOOLS_CLASSES</span><span class="p">}</span>
+<span class="linenos">293</span>    <span class="n">tool_validation_status</span> <span class="o">=</span> <span class="p">{</span><span class="n">tool</span><span class="p">:</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">REQUIRED_TOOLS_CLASSES</span><span class="p">}</span>
+<span class="linenos">294</span>
+<span class="linenos">295</span>    <span class="c1"># Action recognition</span>
+<span class="linenos">296</span>    <span class="n">action_recognizer</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">297</span>    <span class="n">movinet_input_queue</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">298</span>    <span class="n">movinet_output_queue</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">299</span>    <span class="n">movinet_thread</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">300</span>    <span class="n">current_action_step</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos">301</span>    <span class="n">action_validation_count</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos">302</span>    <span class="n">action_validation_start_time</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">303</span>    <span class="n">last_prediction_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="linenos">304</span>    <span class="n">low_confidence_frames</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos">305</span>
+<span class="linenos">306</span>    <span class="c1"># --- Performance Tracking ---</span>
+<span class="linenos">307</span>    <span class="n">frame_rate_buffer</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="n">maxlen</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="linenos">308</span>    <span class="n">avg_frame_rate</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos">309</span>
+<span class="linenos">310</span>    <span class="c1"># --- Main Processing Loop ---</span>
+<span class="linenos">311</span>    <span class="k">try</span><span class="p">:</span>
+<span class="linenos">312</span>        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+<span class="linenos">313</span>            <span class="n">loop_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+<span class="linenos">314</span>
+<span class="linenos">315</span>            <span class="c1"># Read frame</span>
+<span class="linenos">316</span>            <span class="n">ret</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="linenos">317</span>            <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span> <span class="ow">or</span> <span class="n">frame</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">318</span>                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;INFO: End of video stream&#39;</span><span class="p">)</span>
+<span class="linenos">319</span>                <span class="k">break</span>
+<span class="linenos">320</span>
+<span class="linenos">321</span>            <span class="c1"># Resize if needed</span>
+<span class="linenos">322</span>            <span class="k">if</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">640</span> <span class="ow">or</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">480</span><span class="p">:</span>
+<span class="linenos">323</span>                <span class="n">frame</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">))</span>
+<span class="linenos">324</span>
+<span class="linenos">325</span>            <span class="c1"># --- STATE: DETECTING_FLAT_TIRE ---</span>
+<span class="linenos">326</span>            <span class="k">if</span> <span class="n">app_state</span> <span class="o">==</span> <span class="n">STATE_DETECTING_FLAT_TIRE</span><span class="p">:</span>
+<span class="linenos">327</span>                <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="s2">&quot;STEP 1: Find the Flat Tire&quot;</span><span class="p">,</span>
+<span class="linenos">328</span>                                <span class="n">Y_OFFSET_STEP_TITLE</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
+<span class="linenos">329</span>
+<span class="linenos">330</span>                <span class="c1"># Run detection</span>
+<span class="linenos">331</span>                <span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">conf</span><span class="o">=</span><span class="n">TOOLS_CONFIDENCE_THRESHOLD</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">torch_device</span><span class="p">)</span>
+<span class="linenos">332</span>                <span class="n">current_detections</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">boxes</span> <span class="k">if</span> <span class="n">results</span> <span class="ow">and</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">boxes</span> <span class="k">else</span> <span class="p">[]</span>
+<span class="linenos">333</span>
+<span class="linenos">334</span>                <span class="n">found_flat_tire</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="linenos">335</span>                <span class="k">for</span> <span class="n">det</span> <span class="ow">in</span> <span class="n">current_detections</span><span class="p">:</span>
+<span class="linenos">336</span>                    <span class="n">class_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">det</span><span class="o">.</span><span class="n">cls</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+<span class="linenos">337</span>                    <span class="n">class_name</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">class_id</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;ID:</span><span class="si">{</span><span class="n">class_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">338</span>
+<span class="linenos">339</span>                    <span class="k">if</span> <span class="n">class_name</span> <span class="o">==</span> <span class="n">FLAT_TIRE_CLASS_NAME</span><span class="p">:</span>
+<span class="linenos">340</span>                        <span class="n">found_flat_tire</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="linenos">341</span>                        <span class="n">conf</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+<span class="linenos">342</span>                        <span class="n">xyxy</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">xyxy</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="linenos">343</span>
+<span class="linenos">344</span>                        <span class="c1"># Draw bounding box</span>
+<span class="linenos">345</span>                        <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xyxy</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+<span class="linenos">346</span>                                      <span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">xyxy</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="linenos">347</span>                        <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">conf</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+<span class="linenos">348</span>                                    <span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xyxy</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">10</span><span class="p">),</span>
+<span class="linenos">349</span>                                    <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_SIMPLEX</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="linenos">350</span>                        <span class="k">break</span>
+<span class="linenos">351</span>
+<span class="linenos">352</span>                <span class="k">if</span> <span class="n">found_flat_tire</span><span class="p">:</span>
+<span class="linenos">353</span>                    <span class="c1"># Reset lost timer if re-acquired</span>
+<span class="linenos">354</span>                    <span class="k">if</span> <span class="n">flat_tire_lost_temporarily_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">355</span>                        <span class="n">flat_tire_lost_temporarily_time</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">356</span>
+<span class="linenos">357</span>                    <span class="c1"># Start validation timer if not already running</span>
+<span class="linenos">358</span>                    <span class="k">if</span> <span class="n">flat_tire_validation_start_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">359</span>                        <span class="n">flat_tire_validation_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="linenos">360</span>
+<span class="linenos">361</span>                    <span class="c1"># Check validation duration</span>
+<span class="linenos">362</span>                    <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">flat_tire_validation_start_time</span>
+<span class="linenos">363</span>                    <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&gt;=</span> <span class="n">VALIDATION_DURATION_SEC</span><span class="p">:</span>
+<span class="linenos">364</span>                        <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="s2">&quot;Flat Tire Confirmed!&quot;</span><span class="p">,</span>
+<span class="linenos">365</span>                                        <span class="n">Y_OFFSET_STATUS_VALIDATION</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="linenos">366</span>                        <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s1">&#39;Tire Assistant&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+<span class="linenos">367</span>                        <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1500</span><span class="p">)</span>
+<span class="linenos">368</span>
+<span class="linenos">369</span>                        <span class="c1"># Transition to next state</span>
+<span class="linenos">370</span>                        <span class="n">app_state</span> <span class="o">=</span> <span class="n">STATE_COLLECTING_TOOLS</span>
+<span class="linenos">371</span>                        <span class="n">confirmed_tools</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+<span class="linenos">372</span>                        <span class="n">model</span> <span class="o">=</span> <span class="n">YOLO</span><span class="p">(</span><span class="n">tools_model_path</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="s1">&#39;detect&#39;</span><span class="p">)</span>
+<span class="linenos">373</span>                        <span class="n">labels</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">names</span>
+<span class="linenos">374</span>                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: Transitioned to COLLECTING_TOOLS state&quot;</span><span class="p">)</span>
+<span class="linenos">375</span>
+<span class="linenos">376</span>                        <span class="c1"># Reset tool timers</span>
+<span class="linenos">377</span>                        <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">REQUIRED_TOOLS_CLASSES</span><span class="p">:</span>
+<span class="linenos">378</span>                            <span class="n">tool_validation_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">379</span>                            <span class="n">tool_lost_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">380</span>                    <span class="k">else</span><span class="p">:</span>
+<span class="linenos">381</span>                        <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span>
+<span class="linenos">382</span>                                        <span class="sa">f</span><span class="s2">&quot;Confirming Flat Tire... </span><span class="si">{</span><span class="n">VALIDATION_DURATION_SEC</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">,</span>
+<span class="linenos">383</span>                                        <span class="n">Y_OFFSET_STATUS_VALIDATION</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>
+<span class="linenos">384</span>                <span class="k">else</span><span class="p">:</span>
+<span class="linenos">385</span>                    <span class="c1"># Handle temporary loss</span>
+<span class="linenos">386</span>                    <span class="k">if</span> <span class="n">flat_tire_validation_start_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">387</span>                        <span class="k">if</span> <span class="n">flat_tire_lost_temporarily_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">388</span>                            <span class="n">flat_tire_lost_temporarily_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="linenos">389</span>
+<span class="linenos">390</span>                        <span class="n">time_since_lost</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">flat_tire_lost_temporarily_time</span>
+<span class="linenos">391</span>                        <span class="k">if</span> <span class="n">time_since_lost</span> <span class="o">&lt;</span> <span class="n">GRACE_PERIOD_DURATION_SEC</span><span class="p">:</span>
+<span class="linenos">392</span>                            <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span>
+<span class="linenos">393</span>                                            <span class="sa">f</span><span class="s2">&quot;Searching... </span><span class="si">{</span><span class="n">GRACE_PERIOD_DURATION_SEC</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">time_since_lost</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">,</span>
+<span class="linenos">394</span>                                            <span class="n">Y_OFFSET_STATUS_VALIDATION</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="linenos">395</span>                        <span class="k">else</span><span class="p">:</span>
+<span class="linenos">396</span>                            <span class="n">flat_tire_validation_start_time</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">397</span>                            <span class="n">flat_tire_lost_temporarily_time</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">398</span>                            <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="s2">&quot;Point camera at the tire&quot;</span><span class="p">,</span>
+<span class="linenos">399</span>                                            <span class="n">Y_OFFSET_MAIN_INSTRUCTION</span><span class="p">)</span>
+<span class="linenos">400</span>                    <span class="k">else</span><span class="p">:</span>
+<span class="linenos">401</span>                        <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="s2">&quot;Point camera at the tire&quot;</span><span class="p">,</span>
+<span class="linenos">402</span>                                        <span class="n">Y_OFFSET_MAIN_INSTRUCTION</span><span class="p">)</span>
+<span class="linenos">403</span>
+<span class="linenos">404</span>            <span class="c1"># --- STATE: COLLECTING_TOOLS (SIMULTANEOUS VALIDATION) ---</span>
+<span class="linenos">405</span>            <span class="k">elif</span> <span class="n">app_state</span> <span class="o">==</span> <span class="n">STATE_COLLECTING_TOOLS</span><span class="p">:</span>
+<span class="linenos">406</span>                <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="s2">&quot;STEP 2: Collect Required Tools&quot;</span><span class="p">,</span>
+<span class="linenos">407</span>                                <span class="n">Y_OFFSET_STEP_TITLE</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
+<span class="linenos">408</span>
+<span class="linenos">409</span>                <span class="c1"># Run detection</span>
+<span class="linenos">410</span>                <span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">conf</span><span class="o">=</span><span class="n">TOOLS_CONFIDENCE_THRESHOLD</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">torch_device</span><span class="p">)</span>
+<span class="linenos">411</span>                <span class="n">current_yolo_detections</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">boxes</span> <span class="k">if</span> <span class="n">results</span> <span class="ow">and</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">boxes</span> <span class="k">else</span> <span class="p">[]</span>
+<span class="linenos">412</span>
+<span class="linenos">413</span>                <span class="n">detected_tools_in_frame_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+<span class="linenos">414</span>                <span class="k">for</span> <span class="n">det</span> <span class="ow">in</span> <span class="n">current_yolo_detections</span><span class="p">:</span>
+<span class="linenos">415</span>                    <span class="n">classidx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">det</span><span class="o">.</span><span class="n">cls</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+<span class="linenos">416</span>                    <span class="n">classname</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">classidx</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;ID:</span><span class="si">{</span><span class="n">classidx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">417</span>                    <span class="k">if</span> <span class="n">classname</span> <span class="ow">in</span> <span class="n">REQUIRED_TOOLS_CLASSES</span><span class="p">:</span>
+<span class="linenos">418</span>                        <span class="n">detected_tools_in_frame_names</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">classname</span><span class="p">)</span>
+<span class="linenos">419</span>                        <span class="n">conf</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+<span class="linenos">420</span>                        <span class="n">xyxy</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">xyxy</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="linenos">421</span>
+<span class="linenos">422</span>                        <span class="c1"># Draw bounding box</span>
+<span class="linenos">423</span>                        <span class="n">color_idx</span> <span class="o">=</span> <span class="n">classidx</span> <span class="o">%</span> <span class="mi">5</span>
+<span class="linenos">424</span>                        <span class="n">color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">31</span><span class="p">,</span> <span class="mi">119</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span> <span class="k">if</span> <span class="n">color_idx</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> \
+<span class="linenos">425</span>                                <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">14</span><span class="p">)</span> <span class="k">if</span> <span class="n">color_idx</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> \
+<span class="linenos">426</span>                                <span class="p">(</span><span class="mi">44</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">44</span><span class="p">)</span> <span class="k">if</span> <span class="n">color_idx</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">else</span> \
+<span class="linenos">427</span>                                <span class="p">(</span><span class="mi">214</span><span class="p">,</span> <span class="mi">39</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span> <span class="k">if</span> <span class="n">color_idx</span> <span class="o">==</span> <span class="mi">3</span> <span class="k">else</span> \
+<span class="linenos">428</span>                                <span class="p">(</span><span class="mi">148</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">189</span><span class="p">)</span>
+<span class="linenos">429</span>                        <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xyxy</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">xyxy</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span> <span class="n">color</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="linenos">430</span>                        <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">classname</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">conf</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xyxy</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">10</span><span class="p">),</span>
+<span class="linenos">431</span>                                    <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_SIMPLEX</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="linenos">432</span>
+<span class="linenos">433</span>                <span class="c1"># Check if all tools are collected</span>
+<span class="linenos">434</span>                <span class="k">if</span> <span class="n">confirmed_tools</span> <span class="o">==</span> <span class="n">REQUIRED_TOOLS_CLASSES</span><span class="p">:</span>
+<span class="linenos">435</span>                    <span class="n">app_state</span> <span class="o">=</span> <span class="n">STATE_ACTION_RECOGNITION</span>
+<span class="linenos">436</span>                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: Transitioned to ACTION_RECOGNITION state&quot;</span><span class="p">)</span>
+<span class="linenos">437</span>                    <span class="k">continue</span>
+<span class="linenos">438</span>
+<span class="linenos">439</span>                <span class="c1"># Simultaneous validation for all tools</span>
+<span class="linenos">440</span>                <span class="n">status_messages</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="linenos">441</span>                <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">REQUIRED_TOOLS_CLASSES</span><span class="p">:</span>
+<span class="linenos">442</span>                    <span class="k">if</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">confirmed_tools</span><span class="p">:</span>
+<span class="linenos">443</span>                        <span class="k">continue</span>  <span class="c1"># Skip already confirmed tools</span>
+<span class="linenos">444</span>
+<span class="linenos">445</span>                    <span class="k">if</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">detected_tools_in_frame_names</span><span class="p">:</span>
+<span class="linenos">446</span>                        <span class="c1"># Tool detected in this frame</span>
+<span class="linenos">447</span>                        <span class="k">if</span> <span class="n">tool_validation_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">448</span>                            <span class="c1"># Start validation timer</span>
+<span class="linenos">449</span>                            <span class="n">tool_validation_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="linenos">450</span>                            <span class="n">tool_lost_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">451</span>                            <span class="n">status_messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">tool</span><span class="si">}</span><span class="s2">, validating...&quot;</span><span class="p">)</span>
+<span class="linenos">452</span>                        <span class="k">else</span><span class="p">:</span>
+<span class="linenos">453</span>                            <span class="c1"># Continue validation</span>
+<span class="linenos">454</span>                            <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">tool_validation_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span>
+<span class="linenos">455</span>                            <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&gt;=</span> <span class="n">VALIDATION_DURATION_SEC</span><span class="p">:</span>
+<span class="linenos">456</span>                                <span class="c1"># Tool confirmed</span>
+<span class="linenos">457</span>                                <span class="n">confirmed_tools</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tool</span><span class="p">)</span>
+<span class="linenos">458</span>                                <span class="n">tool_validation_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">459</span>                                <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tool</span><span class="si">}</span><span class="s2"> Confirmed!&quot;</span><span class="p">,</span>
+<span class="linenos">460</span>                                                <span class="n">Y_OFFSET_CONFIRMATION_MSG</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="linenos">461</span>                                <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s1">&#39;Tire Assistant&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+<span class="linenos">462</span>                                <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="linenos">463</span>                            <span class="k">else</span><span class="p">:</span>
+<span class="linenos">464</span>                                <span class="n">status_messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validating </span><span class="si">{</span><span class="n">tool</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">VALIDATION_DURATION_SEC</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+<span class="linenos">465</span>                    <span class="k">else</span><span class="p">:</span>
+<span class="linenos">466</span>                        <span class="c1"># Tool not detected</span>
+<span class="linenos">467</span>                        <span class="k">if</span> <span class="n">tool_validation_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">468</span>                            <span class="k">if</span> <span class="n">tool_lost_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">469</span>                                <span class="c1"># Start lost timer</span>
+<span class="linenos">470</span>                                <span class="n">tool_lost_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="linenos">471</span>                            <span class="k">else</span><span class="p">:</span>
+<span class="linenos">472</span>                                <span class="c1"># Check grace period</span>
+<span class="linenos">473</span>                                <span class="n">time_since_lost</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">tool_lost_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span>
+<span class="linenos">474</span>                                <span class="k">if</span> <span class="n">time_since_lost</span> <span class="o">&gt;=</span> <span class="n">GRACE_PERIOD_DURATION_SEC</span><span class="p">:</span>
+<span class="linenos">475</span>                                    <span class="c1"># Tool lost, reset validation</span>
+<span class="linenos">476</span>                                    <span class="n">tool_validation_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">477</span>                                    <span class="n">tool_lost_timers</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">478</span>                                    <span class="n">status_messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tool</span><span class="si">}</span><span class="s2"> validation reset&quot;</span><span class="p">)</span>
+<span class="linenos">479</span>                                <span class="k">else</span><span class="p">:</span>
+<span class="linenos">480</span>                                    <span class="n">status_messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Searching </span><span class="si">{</span><span class="n">tool</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">GRACE_PERIOD_DURATION_SEC</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">time_since_lost</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+<span class="linenos">481</span>
+<span class="linenos">482</span>                <span class="c1"># Display status messages</span>
+<span class="linenos">483</span>                <span class="k">if</span> <span class="n">status_messages</span><span class="p">:</span>
+<span class="linenos">484</span>                    <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="s2">&quot; | &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">status_messages</span><span class="p">),</span>
+<span class="linenos">485</span>                                    <span class="n">Y_OFFSET_STATUS_VALIDATION</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>
+<span class="linenos">486</span>
+<span class="linenos">487</span>                <span class="c1"># Display collected and needed tools</span>
+<span class="linenos">488</span>                <span class="n">still_needed_tools</span> <span class="o">=</span> <span class="n">REQUIRED_TOOLS_CLASSES</span> <span class="o">-</span> <span class="n">confirmed_tools</span>
+<span class="linenos">489</span>                <span class="k">if</span> <span class="n">confirmed_tools</span><span class="p">:</span>
+<span class="linenos">490</span>                    <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Collected: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">confirmed_tools</span><span class="p">)))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+<span class="linenos">491</span>                                    <span class="n">Y_OFFSET_COLLECTED_LIST</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<span class="linenos">492</span>
+<span class="linenos">493</span>                <span class="k">if</span> <span class="n">still_needed_tools</span><span class="p">:</span>
+<span class="linenos">494</span>                    <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Needed: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">still_needed_tools</span><span class="p">)))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+<span class="linenos">495</span>                                    <span class="n">Y_OFFSET_NEEDED_LIST</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="linenos">496</span>
+<span class="linenos">497</span>            <span class="c1"># --- STATE: ACTION_RECOGNITION ---</span>
+<span class="linenos">498</span>            <span class="k">elif</span> <span class="n">app_state</span> <span class="o">==</span> <span class="n">STATE_ACTION_RECOGNITION</span><span class="p">:</span>
+<span class="linenos">499</span>                <span class="c1"># Initialize action recognition on first entry</span>
+<span class="linenos">500</span>                <span class="k">if</span> <span class="n">action_recognizer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">501</span>                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: Initializing action recognition system&quot;</span><span class="p">)</span>
+<span class="linenos">502</span>                    <span class="n">action_recognizer</span> <span class="o">=</span> <span class="n">RealTimeActionRecognizer</span><span class="p">(</span><span class="n">action_weights_path</span><span class="p">,</span> <span class="n">action_config_path</span><span class="p">)</span>
+<span class="linenos">503</span>
+<span class="linenos">504</span>                    <span class="c1"># Setup async processing</span>
+<span class="linenos">505</span>                    <span class="n">movinet_input_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="linenos">506</span>                    <span class="n">movinet_output_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="linenos">507</span>                    <span class="n">movinet_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span>
+<span class="linenos">508</span>                        <span class="n">target</span><span class="o">=</span><span class="n">inference_thread</span><span class="p">,</span>
+<span class="linenos">509</span>                        <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">action_recognizer</span><span class="p">,</span> <span class="n">movinet_input_queue</span><span class="p">,</span> <span class="n">movinet_output_queue</span><span class="p">)</span>
+<span class="linenos">510</span>                    <span class="p">)</span>
+<span class="linenos">511</span>                    <span class="n">movinet_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="linenos">512</span>                    <span class="n">movinet_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="linenos">513</span>
+<span class="linenos">514</span>                    <span class="n">current_action_step</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos">515</span>                    <span class="n">action_validation_count</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos">516</span>                    <span class="n">action_validation_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="linenos">517</span>                    <span class="n">last_prediction_confidence</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="linenos">518</span>                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting action validation for: </span><span class="si">{</span><span class="n">ACTION_STEPS</span><span class="p">[</span><span class="n">current_action_step</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">519</span>
+<span class="linenos">520</span>                <span class="c1"># Display current step</span>
+<span class="linenos">521</span>                <span class="n">step_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;STEP </span><span class="si">{</span><span class="n">current_action_step</span><span class="o">+</span><span class="mi">3</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">ACTION_STEPS</span><span class="p">[</span><span class="n">current_action_step</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="linenos">522</span>                <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">step_title</span><span class="p">,</span> <span class="n">Y_OFFSET_STEP_TITLE</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>
+<span class="linenos">523</span>
+<span class="linenos">524</span>                <span class="c1"># Format and submit frame for processing</span>
+<span class="linenos">525</span>                <span class="n">formatted_frame</span> <span class="o">=</span> <span class="n">action_recognizer</span><span class="o">.</span><span class="n">format_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+<span class="linenos">526</span>                <span class="k">if</span> <span class="n">movinet_input_queue</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+<span class="linenos">527</span>                    <span class="k">try</span><span class="p">:</span>
+<span class="linenos">528</span>                        <span class="n">movinet_input_queue</span><span class="o">.</span><span class="n">put_nowait</span><span class="p">(</span><span class="n">formatted_frame</span><span class="p">)</span>
+<span class="linenos">529</span>                    <span class="k">except</span> <span class="n">queue</span><span class="o">.</span><span class="n">Full</span><span class="p">:</span>
+<span class="linenos">530</span>                        <span class="k">pass</span>
+<span class="linenos">531</span>
+<span class="linenos">532</span>                <span class="c1"># Get latest prediction</span>
+<span class="linenos">533</span>                <span class="n">prediction</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">534</span>                <span class="k">try</span><span class="p">:</span>
+<span class="linenos">535</span>                    <span class="n">prediction</span> <span class="o">=</span> <span class="n">movinet_output_queue</span><span class="o">.</span><span class="n">get_nowait</span><span class="p">()</span>
+<span class="linenos">536</span>                <span class="k">except</span> <span class="n">queue</span><span class="o">.</span><span class="n">Empty</span><span class="p">:</span>
+<span class="linenos">537</span>                    <span class="k">pass</span>
+<span class="linenos">538</span>
+<span class="linenos">539</span>                <span class="c1"># Process prediction</span>
+<span class="linenos">540</span>                <span class="k">if</span> <span class="n">prediction</span><span class="p">:</span>
+<span class="linenos">541</span>                    <span class="n">current_confidence</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="s1">&#39;confidence&#39;</span><span class="p">]</span>
+<span class="linenos">542</span>                    <span class="n">current_action</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="s1">&#39;smoothed_prediction&#39;</span><span class="p">]</span>
+<span class="linenos">543</span>
+<span class="linenos">544</span>                    <span class="c1"># Check for significant confidence drop (≥0.05) for the current action</span>
+<span class="linenos">545</span>                    <span class="k">if</span> <span class="p">(</span><span class="n">last_prediction_confidence</span> <span class="o">-</span> <span class="n">current_confidence</span> <span class="o">&gt;=</span> <span class="mf">0.05</span> <span class="ow">and</span>
+<span class="linenos">546</span>                        <span class="n">current_action</span> <span class="o">==</span> <span class="n">ACTION_STEPS</span><span class="p">[</span><span class="n">current_action_step</span><span class="p">]):</span>
+<span class="linenos">547</span>                        <span class="n">action_recognizer</span><span class="o">.</span><span class="n">reset_states</span><span class="p">()</span>
+<span class="linenos">548</span>                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reset MoViNet: Confidence dropped by </span><span class="si">{</span><span class="n">last_prediction_confidence</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">current_confidence</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> for </span><span class="si">{</span><span class="n">current_action</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">549</span>
+<span class="linenos">550</span>                    <span class="c1"># Track confidence for next frame</span>
+<span class="linenos">551</span>                    <span class="n">last_prediction_confidence</span> <span class="o">=</span> <span class="n">current_confidence</span>
+<span class="linenos">552</span>
+<span class="linenos">553</span>                    <span class="c1"># Display prediction info</span>
+<span class="linenos">554</span>                    <span class="n">pred_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Action: </span><span class="si">{</span><span class="n">current_action</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">current_confidence</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">)&quot;</span>
+<span class="linenos">555</span>                    <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">pred_text</span><span class="p">,</span> <span class="n">Y_OFFSET_MAIN_INSTRUCTION</span><span class="p">,</span>
+<span class="linenos">556</span>                                    <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="n">current_action</span> <span class="o">==</span> <span class="n">ACTION_STEPS</span><span class="p">[</span><span class="n">current_action_step</span><span class="p">]</span> <span class="k">else</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<span class="linenos">557</span>
+<span class="linenos">558</span>                    <span class="c1"># Validate current step</span>
+<span class="linenos">559</span>                    <span class="k">if</span> <span class="n">current_action</span> <span class="o">==</span> <span class="n">ACTION_STEPS</span><span class="p">[</span><span class="n">current_action_step</span><span class="p">]</span> <span class="ow">and</span> <span class="n">current_confidence</span> <span class="o">&gt;=</span> <span class="n">ACTION_CONFIDENCE_THRESHOLD</span><span class="p">:</span>
+<span class="linenos">560</span>                        <span class="n">action_validation_count</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="linenos">561</span>
+<span class="linenos">562</span>                        <span class="c1"># Check if step is completed</span>
+<span class="linenos">563</span>                        <span class="k">if</span> <span class="n">action_validation_count</span> <span class="o">&gt;=</span> <span class="n">ACTION_VALIDATION_FRAMES</span><span class="p">:</span>
+<span class="linenos">564</span>                            <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="s2">&quot;Step Completed!&quot;</span><span class="p">,</span>
+<span class="linenos">565</span>                                            <span class="n">Y_OFFSET_CONFIRMATION_MSG</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="linenos">566</span>                            <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s1">&#39;Tire Assistant&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+<span class="linenos">567</span>                            <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1500</span><span class="p">)</span>
+<span class="linenos">568</span>
+<span class="linenos">569</span>                            <span class="c1"># Move to next step</span>
+<span class="linenos">570</span>                            <span class="n">current_action_step</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="linenos">571</span>                            <span class="n">action_validation_count</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos">572</span>
+<span class="linenos">573</span>                            <span class="c1"># Check if all steps are completed</span>
+<span class="linenos">574</span>                            <span class="k">if</span> <span class="n">current_action_step</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ACTION_STEPS</span><span class="p">):</span>
+<span class="linenos">575</span>                                <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="s2">&quot;ALL STEPS COMPLETED!&quot;</span><span class="p">,</span>
+<span class="linenos">576</span>                                                <span class="n">Y_OFFSET_MAIN_INSTRUCTION</span><span class="p">,</span>
+<span class="linenos">577</span>                                                <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">font_scale</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="linenos">578</span>                                <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s1">&#39;Tire Assistant&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+<span class="linenos">579</span>                                <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">3000</span><span class="p">)</span>
+<span class="linenos">580</span>                                <span class="k">break</span>
+<span class="linenos">581</span>
+<span class="linenos">582</span>                            <span class="c1"># Reset states for new action</span>
+<span class="linenos">583</span>                            <span class="n">action_recognizer</span><span class="o">.</span><span class="n">reset_states</span><span class="p">()</span>
+<span class="linenos">584</span>                            <span class="n">last_prediction_confidence</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="linenos">585</span>                            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting action validation for: </span><span class="si">{</span><span class="n">ACTION_STEPS</span><span class="p">[</span><span class="n">current_action_step</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">586</span>                    <span class="k">else</span><span class="p">:</span>
+<span class="linenos">587</span>                        <span class="n">action_validation_count</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">action_validation_count</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<span class="linenos">588</span>
+<span class="linenos">589</span>                <span class="c1"># Display validation progress</span>
+<span class="linenos">590</span>                <span class="n">progress_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Validation: </span><span class="si">{</span><span class="n">action_validation_count</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">ACTION_VALIDATION_FRAMES</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="linenos">591</span>                <span class="n">display_message</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">progress_text</span><span class="p">,</span> <span class="n">Y_OFFSET_ACTION_PROGRESS</span><span class="p">,</span>
+<span class="linenos">592</span>                                <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span> <span class="k">if</span> <span class="n">action_validation_count</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">165</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="linenos">593</span>
+<span class="linenos">594</span>
+<span class="linenos">595</span>            <span class="c1"># --- FPS Calculation and Display ---</span>
+<span class="linenos">596</span>            <span class="n">loop_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">loop_start_time</span>
+<span class="linenos">597</span>            <span class="n">fps</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">loop_time</span> <span class="k">if</span> <span class="n">loop_time</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+<span class="linenos">598</span>            <span class="n">frame_rate_buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fps</span><span class="p">)</span>
+<span class="linenos">599</span>            <span class="n">avg_frame_rate</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">frame_rate_buffer</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame_rate_buffer</span><span class="p">)</span> <span class="k">if</span> <span class="n">frame_rate_buffer</span> <span class="k">else</span> <span class="mi">0</span>
+<span class="linenos">600</span>
+<span class="linenos">601</span>            <span class="c1"># Display FPS</span>
+<span class="linenos">602</span>            <span class="n">fps_color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="n">avg_frame_rate</span> <span class="o">&gt;</span> <span class="mi">15</span> <span class="k">else</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span> <span class="k">if</span> <span class="n">avg_frame_rate</span> <span class="o">&gt;</span> <span class="mi">5</span> <span class="k">else</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+<span class="linenos">603</span>            <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;FPS: </span><span class="si">{</span><span class="n">avg_frame_rate</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+<span class="linenos">604</span>                        <span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
+<span class="linenos">605</span>                        <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_SIMPLEX</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">fps_color</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="linenos">606</span>
+<span class="linenos">607</span>            <span class="c1"># Display frame</span>
+<span class="linenos">608</span>            <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s1">&#39;Tire Assistant&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+<span class="linenos">609</span>
+<span class="linenos">610</span>            <span class="c1"># Handle keyboard input</span>
+<span class="linenos">611</span>            <span class="n">key</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
+<span class="linenos">612</span>            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">):</span>
+<span class="linenos">613</span>                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: Quitting...&quot;</span><span class="p">)</span>
+<span class="linenos">614</span>                <span class="k">break</span>
+<span class="linenos">615</span>            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">):</span>
+<span class="linenos">616</span>                <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Pause</span>
+<span class="linenos">617</span>            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">app_state</span> <span class="o">==</span> <span class="n">STATE_ACTION_RECOGNITION</span><span class="p">:</span>
+<span class="linenos">618</span>                <span class="c1"># Reset action recognition states</span>
+<span class="linenos">619</span>                <span class="k">if</span> <span class="n">action_recognizer</span><span class="p">:</span>
+<span class="linenos">620</span>                    <span class="n">action_recognizer</span><span class="o">.</span><span class="n">reset_states</span><span class="p">()</span>
+<span class="linenos">621</span>                    <span class="n">action_validation_count</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos">622</span>                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Action recognition states reset&quot;</span><span class="p">)</span>
+<span class="linenos">623</span>
+<span class="linenos">624</span>    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+<span class="linenos">625</span>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: Process interrupted&quot;</span><span class="p">)</span>
+<span class="linenos">626</span>    <span class="k">finally</span><span class="p">:</span>
+<span class="linenos">627</span>        <span class="c1"># Cleanup</span>
+<span class="linenos">628</span>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: Releasing resources...&quot;</span><span class="p">)</span>
+<span class="linenos">629</span>        <span class="n">cap</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+<span class="linenos">630</span>        <span class="n">cv2</span><span class="o">.</span><span class="n">destroyAllWindows</span><span class="p">()</span>
+<span class="linenos">631</span>
+<span class="linenos">632</span>        <span class="c1"># Stop MoViNet thread if running</span>
+<span class="linenos">633</span>        <span class="k">if</span> <span class="n">movinet_thread</span> <span class="ow">and</span> <span class="n">movinet_thread</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+<span class="linenos">634</span>            <span class="n">movinet_input_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+<span class="linenos">635</span>            <span class="n">movinet_thread</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+<span class="linenos">636</span>
+<span class="linenos">637</span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;INFO: Average FPS: </span><span class="si">{</span><span class="n">avg_frame_rate</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">638</span>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INFO: Program terminated&quot;</span><span class="p">)</span>
+<span class="linenos">639</span>
+<span class="linenos">640</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="linenos">641</span>    <span class="n">main_orchestrator</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="5_Assistant_chatbot.html" class="btn btn-neutral float-left" title="IV- Voice Assistant" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="7_Installation_And_Usage.html" class="btn btn-neutral float-right" title="VII - Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Changing flat tyre assistant.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

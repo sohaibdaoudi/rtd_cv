@@ -1,0 +1,944 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>III. Action Recognition &mdash; Changing flat tyre assistant  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="III-Object Detection" href="4_Object_detection.html" />
+    <link rel="prev" title="II. Team" href="2_Team.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Changing flat tyre assistant
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table des matières:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="1_Introduction.html">I-Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_Team.html">II. Team</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">III. Action Recognition</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#data">1. Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#data-collection">1.1 Data Collection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-annotation">1.2 Data Annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-augmentation">1.3 Data Augmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-balancing">1.4 Data Balancing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dataset-summary">1.5 Dataset Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#models">2. Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#efficientnet">2.1 EfficientNet</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#a-video-frame-processing">a. Video Frame Processing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b-from-video-frames-to-tensorflow-dataset">b. from Video Frames to TensorFlow Dataset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#c-data-loading-and-splitting">c. Data Loading and Splitting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#d-creating-tensorflow-dataset-objects">d. Creating TensorFlow <cite>Dataset</cite> Objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#e-model-training">e. Model Training</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#f-model-evaluation">f. Model Evaluation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#movinet">2.2 MoViNet</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#a-video-frame-processing-from-video-frames-to-tensorflow-dataset-data-loading-and-splitting">a. Video Frame Processing &amp; from video frames to TensorFlow dataset &amp; Data Loading and Splitting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b-training-the-movinet-model">b. Training the MoViNet Model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#c-model-evaluation">c. Model Evaluation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#e-movinet-inference-example">e. Movinet inference example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#conclusion">3.3 Conclusion</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="4_Object_detection.html">III-Object Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_Assistant_chatbot.html">IV- Voice Assistant</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_Algorithme.html">VI – Assistant Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="7_Installation_And_Usage.html">VII - Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="8_perspectives.html">VIII – Future Enhancements</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Changing flat tyre assistant</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">III. Action Recognition</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/Documentation/Scripts/3_Action_recognition.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="iii-action-recognition">
+<h1>III. Action Recognition<a class="headerlink" href="#iii-action-recognition" title="Link to this heading"></a></h1>
+<p>Action recognition is a crucial aspect of our project, enabling the system to identify and interpret human actions in real-time.
+Our model is designed to recognize the actions performed by a user during the tire-changing process.</p>
+<p>This involves 9 distinct actions:</p>
+<ul class="simple">
+<li><p>hand_tighten_bolts</p></li>
+<li><p>initial_wrench_tighten</p></li>
+<li><p>lift_car_with_jack</p></li>
+<li><p>loosen_bolts</p></li>
+<li><p>lower_car</p></li>
+<li><p>place_spare_tire</p></li>
+<li><p>remove_bolts</p></li>
+<li><p>remove_tire</p></li>
+<li><p>tighten_bolts</p></li>
+</ul>
+<section id="data">
+<h2>1. Data<a class="headerlink" href="#data" title="Link to this heading"></a></h2>
+<section id="data-collection">
+<h3>1.1 Data Collection<a class="headerlink" href="#data-collection" title="Link to this heading"></a></h3>
+<p>To train our action recognition model, we collected a dataset of videos showing the tire-changing process from a first-person perspective.</p>
+<p><strong>a. Self-collected videos</strong></p>
+<p>We recorded <strong>self-collected footage</strong> while changing two tires on a <strong>Renault Megane 2</strong>.
+The videos were captured using <strong>Samsung A50 smartphones</strong> with <strong>wide camera mode</strong>, mounted on the <strong>chest</strong> to provide a <strong>first-person perspective</strong>.
+In total, we recorded <strong>4 videos</strong> — <strong>2 per person</strong> — with each video lasting approximately <strong>30 to 45 minutes</strong>.</p>
+<img alt="Self-collected data example" class="align-center" src="../../_images/Action_recorded.gif" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p><strong>b. Public Data</strong></p>
+<p>To enhance our model’s performance and generalization, we also utilized publicly available video datasets. These were primarily sourced from YouTube, featuring various tire-changing scenarios and camera angles.</p>
+<img alt="Public data example" class="align-center" src="../../_images/output_youtube.gif" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</section>
+<section id="data-annotation">
+<h3>1.2 Data Annotation<a class="headerlink" href="#data-annotation" title="Link to this heading"></a></h3>
+<p>All the collected videos were annotated to identify specific actions performed during the tire-changing process. The annotation process involved manually segmenting the videos into short clips corresponding to each distinct action.</p>
+<p>We used FFmpeg for this purpose. For each video, the relevant time intervals were determined, and FFmpeg was used to extract clips representing individual actions. Each resulting clip was then saved with a descriptive filename indicating the action performed.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ffmpeg</span> <span class="o">-</span><span class="n">i</span> <span class="s2">&quot;losen.mp4&quot;</span> <span class="o">-</span><span class="n">ss</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">02</span> <span class="o">-</span><span class="n">to</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">06</span> <span class="s2">&quot;C:\Users\LENOVO\Desktop\S6\Project_S6\Computer_Vision\Changing_tires\Data_Action_Recognition\loosen_bolts\loosen_bolts_6.mp4&quot;</span>
+</pre></div>
+</div>
+<p>In this example, a segment from 2 to 6 seconds of the <cite>losen.mp4</cite> video is extracted and saved as a clip labeled “loosen_bolts”.</p>
+<p>The dataset is organized as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>actions/
+│
+├───hand_tighten_bolts/
+│       hand_tighten_bolts_01.mp4
+│       hand_tighten_bolts_02.mp4
+│       ...
+│
+├───initial_wrench_tighten/
+│       initial_wrench_tighten_13.mp4
+│       ...
+│
+├───lift_car_with_jack/
+│       ...
+│
+├───loosen_bolts/
+│       ...
+│
+└───other classes...
+</pre></div>
+</div>
+<p>the number of clips per action varies, with some actions having more clips than others.</p>
+<img alt="Number of videos per action without augmentation" class="align-center" src="../../_images/number_of_videos_without_augmentation.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</section>
+<section id="data-augmentation">
+<h3>1.3 Data Augmentation<a class="headerlink" href="#data-augmentation" title="Link to this heading"></a></h3>
+<p>Due to the limited amount of real data collected, we applied data augmentation techniques to artificially expand the dataset and improve model generalization. Augmenting the available recordings helps simulate a wider variety of real-world conditions and reduces overfitting during model training.</p>
+<p>We chose to augment only the data that we recorded ourselves, as this subset of the dataset most accurately represents real-world tire-changing scenarios.</p>
+<p>The augmentation process was implemented using OpenCV and the <cite>imgaug</cite> library. Each video was loaded, frame-by-frame, and a series of transformations were applied to create new variations. Augmented clips were saved alongside the original videos with filenames indicating the type of augmentation.</p>
+<p>The following augmentations were applied:</p>
+<ul class="simple">
+<li><p><strong>Piecewise Affine Transformation</strong> – Slight geometric distortions.</p></li>
+<li><p><strong>Gaussian Blur</strong> – Simulates defocus or motion blur.</p></li>
+<li><p><strong>Random Rotation</strong> – Rotates frames by a small random angle.</p></li>
+<li><p><strong>Shear Transformation</strong> – Introduces horizontal/vertical tilt.</p></li>
+<li><p><strong>Brightness Adjustment</strong> – Simulates lighting changes.</p></li>
+<li><p><strong>Contrast Adjustment</strong> – Modifies the overall contrast.</p></li>
+<li><p><strong>Gaussian Noise</strong> – Simulates sensor or compression noise.</p></li>
+<li><p><strong>Coarse Dropout</strong> – Randomly masks portions of the frame.</p></li>
+<li><p><strong>Slow Motion</strong> – Duplicates frames to simulate slower actions.</p></li>
+<li><p><strong>Fast Motion</strong> – Skips frames to simulate quicker actions.</p></li>
+</ul>
+<p>Example of augmented filenames:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">remove_bolts_13</span><span class="o">.</span><span class="n">mp4</span>
+<span class="n">remove_bolts_13_gaussian_blur</span><span class="o">.</span><span class="n">mp4</span>
+<span class="n">remove_bolts_13_brightness</span><span class="o">.</span><span class="n">mp4</span>
+<span class="n">remove_bolts_13_fast_motion</span><span class="o">.</span><span class="n">mp4</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>The augmentation was executed using the following script:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">imgaug</span><span class="w"> </span><span class="kn">import</span> <span class="n">augmenters</span> <span class="k">as</span> <span class="n">iaa</span>
+
+<span class="n">start_indices</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;hand_tighten_bolts&quot;</span><span class="p">:</span> <span class="mi">9999</span><span class="p">,</span>
+    <span class="s2">&quot;initial_wrench_tighten&quot;</span><span class="p">:</span> <span class="mi">9999</span><span class="p">,</span>
+    <span class="s2">&quot;lift_car_with_jack&quot;</span><span class="p">:</span> <span class="mi">9999</span><span class="p">,</span>
+    <span class="s2">&quot;loosen_bolts&quot;</span><span class="p">:</span> <span class="mi">9999</span><span class="p">,</span>
+    <span class="s2">&quot;lower_car&quot;</span><span class="p">:</span> <span class="mi">9999</span><span class="p">,</span>
+    <span class="s2">&quot;place_spare_tire&quot;</span><span class="p">:</span> <span class="mi">9999</span><span class="p">,</span>
+    <span class="s2">&quot;remove_bolts&quot;</span><span class="p">:</span> <span class="mi">13</span><span class="p">,</span>
+    <span class="s2">&quot;remove_tire&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;tighten_bolts&quot;</span><span class="p">:</span> <span class="mi">3</span>
+<span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">slow_motion</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">frames</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">factor</span><span class="p">)]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">fast_motion</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">frames</span><span class="p">[::</span><span class="n">factor</span><span class="p">]</span>
+
+<span class="n">augmentations</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;piecewise_affine&#39;</span><span class="p">,</span> <span class="n">iaa</span><span class="o">.</span><span class="n">PiecewiseAffine</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">))),</span>
+    <span class="p">(</span><span class="s1">&#39;gaussian_blur&#39;</span><span class="p">,</span> <span class="n">iaa</span><span class="o">.</span><span class="n">GaussianBlur</span><span class="p">(</span><span class="n">sigma</span><span class="o">=</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">))),</span>
+    <span class="p">(</span><span class="s1">&#39;random_rotate&#39;</span><span class="p">,</span> <span class="n">iaa</span><span class="o">.</span><span class="n">Affine</span><span class="p">(</span><span class="n">rotate</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))),</span>
+    <span class="p">(</span><span class="s1">&#39;shear&#39;</span><span class="p">,</span> <span class="n">iaa</span><span class="o">.</span><span class="n">Affine</span><span class="p">(</span><span class="n">shear</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))),</span>
+    <span class="p">(</span><span class="s1">&#39;brightness&#39;</span><span class="p">,</span> <span class="n">iaa</span><span class="o">.</span><span class="n">Multiply</span><span class="p">((</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">))),</span>
+    <span class="p">(</span><span class="s1">&#39;contrast&#39;</span><span class="p">,</span> <span class="n">iaa</span><span class="o">.</span><span class="n">LinearContrast</span><span class="p">((</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">))),</span>
+    <span class="p">(</span><span class="s1">&#39;noise&#39;</span><span class="p">,</span> <span class="n">iaa</span><span class="o">.</span><span class="n">AdditiveGaussianNoise</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">))),</span>
+    <span class="p">(</span><span class="s1">&#39;dropout&#39;</span><span class="p">,</span> <span class="n">iaa</span><span class="o">.</span><span class="n">CoarseDropout</span><span class="p">((</span><span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="n">size_percent</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s1">&#39;slow_motion&#39;</span><span class="p">,</span> <span class="s1">&#39;slow_motion&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;fast_motion&#39;</span><span class="p">,</span> <span class="s1">&#39;fast_motion&#39;</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">process_videos</span><span class="p">(</span><span class="n">root_dir</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">root_dir</span><span class="p">):</span>
+        <span class="n">action_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">action_dir</span><span class="p">)</span> <span class="ow">or</span> <span class="n">action</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">start_indices</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">start_index</span> <span class="o">=</span> <span class="n">start_indices</span><span class="p">[</span><span class="n">action</span><span class="p">]</span>
+        <span class="n">video_files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">action_dir</span><span class="p">)</span> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;_(\d+)\.mp4$&#39;</span><span class="p">,</span> <span class="n">f</span><span class="p">)],</span>
+            <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;_(\d+)\.mp4$&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">video_file</span> <span class="ow">in</span> <span class="n">video_files</span><span class="p">:</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;_(\d+)\.mp4$&#39;</span><span class="p">,</span> <span class="n">video_file</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">match</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">video_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">video_index</span> <span class="o">&lt;</span> <span class="n">start_index</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">video_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">action_dir</span><span class="p">,</span> <span class="n">video_file</span><span class="p">)</span>
+            <span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>
+            <span class="n">frames</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">ret</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2RGB</span><span class="p">))</span>
+            <span class="n">cap</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">frames</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">for</span> <span class="n">aug_name</span><span class="p">,</span> <span class="n">aug</span> <span class="ow">in</span> <span class="n">augmentations</span><span class="p">:</span>
+                <span class="n">base_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">video_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">output_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">action_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">aug_name</span><span class="si">}</span><span class="s2">.mp4&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">aug_name</span> <span class="o">==</span> <span class="s1">&#39;slow_motion&#39;</span><span class="p">:</span>
+                    <span class="n">augmented</span> <span class="o">=</span> <span class="n">slow_motion</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">aug_name</span> <span class="o">==</span> <span class="s1">&#39;fast_motion&#39;</span><span class="p">:</span>
+                    <span class="n">augmented</span> <span class="o">=</span> <span class="n">fast_motion</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">det_aug</span> <span class="o">=</span> <span class="n">aug</span><span class="o">.</span><span class="n">to_deterministic</span><span class="p">()</span>
+                    <span class="n">augmented</span> <span class="o">=</span> <span class="p">[</span><span class="n">det_aug</span><span class="o">.</span><span class="n">augment_image</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">frames</span><span class="p">]</span>
+
+                <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">augmented</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">fourcc</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoWriter_fourcc</span><span class="p">(</span><span class="o">*</span><span class="s1">&#39;mp4v&#39;</span><span class="p">)</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoWriter</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="n">fourcc</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">augmented</span><span class="p">:</span>
+                    <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGB2BGR</span><span class="p">))</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">dataset_path</span> <span class="o">=</span> <span class="s2">&quot;D:/Actions&quot;</span>
+    <span class="n">process_videos</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The number of clips per action after augmentation is as follows:</p>
+<img alt="Number of videos per action with augmentation" class="align-center" src="../../_images/number_of_videos_after_augmentation.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</section>
+<section id="data-balancing">
+<h3>1.4 Data Balancing<a class="headerlink" href="#data-balancing" title="Link to this heading"></a></h3>
+<p>After applying data augmentation, we observed that the number of video clips per action class remained imbalanced. This imbalance could negatively impact the training of the action recognition model, as some actions would be overrepresented while others underrepresented.</p>
+<p>To address this issue, we implemented a balancing strategy to ensure that each action has approximately the same number of video clips. The process followed these principles:</p>
+<ul class="simple">
+<li><p>We identified the action class with the <strong>fewest</strong> total clips (original + augmented).</p></li>
+<li><p>For all other action classes, we selected a <strong>random subset</strong> of clips equal in number to this minimum, prioritizing the clips that were recorded by us.</p></li>
+<li><p>If there were not enough real recordings, we complemented the subset using augmented versions in a round-robin fashion to maintain diversity and avoid overfitting.</p></li>
+</ul>
+<p>This method ensured a balanced and diverse dataset without sacrificing the authenticity of real-world data.</p>
+<p>The balancing process was implemented using the following Python script:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span><span class="p">,</span> <span class="n">Counter</span>
+
+<span class="n">source_dir</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;D:\Actions&quot;</span>
+<span class="n">target_dir</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;D:\Datset_Action_Recognition_Balanced&quot;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">target_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">original_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^(.*)_\d</span><span class="si">{2}</span><span class="s2">\.mp4$&quot;</span><span class="p">)</span>
+<span class="n">augmented_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^(.*)_\d</span><span class="si">{2}</span><span class="s2">_(\w+)\.mp4$&quot;</span><span class="p">)</span>
+
+<span class="n">action_videos</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;original&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;augmented_by_type&quot;</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)})</span>
+<span class="n">all_counts</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="c1"># Step 1: Load video metadata</span>
+<span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">source_dir</span><span class="p">):</span>
+   <span class="n">action_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">source_dir</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span>
+   <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">action_path</span><span class="p">):</span>
+      <span class="k">continue</span>
+
+   <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">action_path</span><span class="p">):</span>
+      <span class="n">full_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">action_path</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">original_pattern</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+         <span class="n">action_videos</span><span class="p">[</span><span class="n">action</span><span class="p">][</span><span class="s2">&quot;original&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
+      <span class="k">else</span><span class="p">:</span>
+         <span class="n">match</span> <span class="o">=</span> <span class="n">augmented_pattern</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+         <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+            <span class="n">aug_type</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">action_videos</span><span class="p">[</span><span class="n">action</span><span class="p">][</span><span class="s2">&quot;augmented_by_type&quot;</span><span class="p">][</span><span class="n">aug_type</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
+
+   <span class="n">total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">action_videos</span><span class="p">[</span><span class="n">action</span><span class="p">][</span><span class="s2">&quot;original&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">action_videos</span><span class="p">[</span><span class="n">action</span><span class="p">][</span><span class="s2">&quot;augmented_by_type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+   <span class="n">all_counts</span><span class="p">[</span><span class="n">action</span><span class="p">]</span> <span class="o">=</span> <span class="n">total</span>
+
+<span class="c1"># Step 2: Determine minimum clip count</span>
+<span class="n">min_total</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">all_counts</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[INFO] Minimum total videos per action: </span><span class="si">{</span><span class="n">min_total</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">action_to_label</span> <span class="o">=</span> <span class="p">{</span><span class="n">action</span><span class="p">:</span> <span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">action</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">action_videos</span><span class="p">))}</span>
+<span class="n">csv_entries</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">readme_lines</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;# Dataset Summary</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">]</span>
+<span class="n">readme_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Minimum total videos per action: </span><span class="si">{</span><span class="n">min_total</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Step 3: Balance each class</span>
+<span class="k">for</span> <span class="n">action</span><span class="p">,</span> <span class="n">content</span> <span class="ow">in</span> <span class="n">action_videos</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+   <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_dir</span><span class="p">,</span> <span class="n">action</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+   <span class="n">originals</span> <span class="o">=</span> <span class="n">content</span><span class="p">[</span><span class="s2">&quot;original&quot;</span><span class="p">]</span>
+   <span class="n">augmented_by_type</span> <span class="o">=</span> <span class="n">content</span><span class="p">[</span><span class="s2">&quot;augmented_by_type&quot;</span><span class="p">]</span>
+
+   <span class="n">max_select</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">originals</span><span class="p">)</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">augmented_by_type</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+   <span class="n">selected_real</span> <span class="o">=</span> <span class="p">[]</span>
+   <span class="n">selected_aug</span> <span class="o">=</span> <span class="p">[]</span>
+   <span class="n">aug_type_counter</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+
+   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">originals</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">max_select</span><span class="p">:</span>
+      <span class="n">selected_real</span> <span class="o">=</span> <span class="n">originals</span><span class="p">[:</span><span class="n">max_select</span><span class="p">]</span>
+   <span class="k">else</span><span class="p">:</span>
+      <span class="n">selected_real</span> <span class="o">=</span> <span class="n">originals</span>
+      <span class="n">remaining</span> <span class="o">=</span> <span class="n">max_select</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">originals</span><span class="p">)</span>
+
+      <span class="n">aug_pool</span> <span class="o">=</span> <span class="p">[]</span>
+      <span class="k">for</span> <span class="n">aug_type</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">augmented_by_type</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+         <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+         <span class="n">aug_pool</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">aug_type</span><span class="p">,</span> <span class="n">files</span><span class="o">.</span><span class="n">copy</span><span class="p">()))</span>
+
+      <span class="k">while</span> <span class="n">remaining</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">files</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">aug_pool</span><span class="p">):</span>
+         <span class="k">for</span> <span class="n">aug_type</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">aug_pool</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">files</span> <span class="ow">and</span> <span class="n">remaining</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+               <span class="n">selected_file</span> <span class="o">=</span> <span class="n">files</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+               <span class="n">selected_aug</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">selected_file</span><span class="p">)</span>
+               <span class="n">aug_type_counter</span><span class="p">[</span><span class="n">aug_type</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+               <span class="n">remaining</span> <span class="o">-=</span> <span class="mi">1</span>
+
+   <span class="n">selected_all</span> <span class="o">=</span> <span class="n">selected_real</span> <span class="o">+</span> <span class="n">selected_aug</span>
+   <span class="k">for</span> <span class="n">src</span> <span class="ow">in</span> <span class="n">selected_all</span><span class="p">:</span>
+      <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+      <span class="n">dst</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_dir</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+      <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
+      <span class="n">csv_entries</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">),</span> <span class="n">action_to_label</span><span class="p">[</span><span class="n">action</span><span class="p">]])</span>
+
+   <span class="c1"># Add stats to README</span>
+   <span class="n">readme_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">action</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+   <span class="n">readme_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Selected real videos     : </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">selected_real</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+   <span class="n">readme_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Selected augmented videos: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">selected_aug</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+   <span class="n">readme_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Selected total           : </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">selected_all</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+   <span class="n">readme_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Augmentation breakdown   :&quot;</span><span class="p">)</span>
+   <span class="k">if</span> <span class="n">selected_aug</span><span class="p">:</span>
+      <span class="k">for</span> <span class="n">aug_type</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">aug_type_counter</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+         <span class="n">readme_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    - </span><span class="si">{</span><span class="n">aug_type</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+   <span class="k">else</span><span class="p">:</span>
+      <span class="n">readme_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;    - None&quot;</span><span class="p">)</span>
+   <span class="n">readme_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+<span class="c1"># Step 4: Save labels.csv</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_dir</span><span class="p">,</span> <span class="s2">&quot;labels.csv&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+   <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+   <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span><span class="s2">&quot;video_path&quot;</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">])</span>
+   <span class="n">writer</span><span class="o">.</span><span class="n">writerows</span><span class="p">(</span><span class="n">csv_entries</span><span class="p">)</span>
+
+<span class="c1"># Step 5: Save README.txt</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_dir</span><span class="p">,</span> <span class="s2">&quot;README.txt&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+   <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">readme_lines</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="dataset-summary">
+<h3>1.5 Dataset Summary<a class="headerlink" href="#dataset-summary" title="Link to this heading"></a></h3>
+<p>The final balanced dataset contains approximately <strong>100 clips per action</strong>, ensuring a diverse representation of each action type. This balance is crucial for training a robust action recognition model that can generalize well to unseen data.</p>
+<img alt="Number of videos per action after balancing" class="align-center" src="../../_images/number_of_videos_balanced.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>The dataset is structured as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Dataset/
+│   labels.csv
+│   README.txt
+│
+├───hand_tighten_bolts
+│       hand_tighten_bolts_01.mp4
+│       hand_tighten_bolts_02.mp4
+│       ...
+│
+├───initial_wrench_tighten
+│       initial_wrench_tighten_01.mp4
+│       initial_wrench_tighten_02.mp4
+│       ...
+│
+├───lift_car_with_jack
+│       lift_car_with_jack_01.mp4
+│       lift_car_with_jack_02.mp4
+│       ...
+│
+├───loosen_bolts
+│       loosen_bolts_01.mp4
+│       loosen_bolts_02.mp4
+│       ...
+│
+├───lower_car
+│       lower_car_01.mp4
+│       lower_car_02.mp4
+│       ...
+│
+├───place_spare_tire
+│       place_spare_tire_01.mp4
+│       place_spare_tire_01_brightness.mp4
+│       ...
+│
+├───remove_bolts
+│       remove_bolts_01.mp4
+│       remove_bolts_02.mp4
+│       ...
+│
+├───remove_tire
+│       remove_tire_01.mp4
+│       remove_tire_01_brightness.mp4
+│       ...
+│
+└───tighten_bolts
+      tighten_bolts_01.mp4
+      tighten_bolts_02.mp4
+      ...
+</pre></div>
+</div>
+<p>the labels.csv file contains the mapping of video paths to their corresponding action labels, and the README.txt file provides an overview of the dataset, including the number of clips per action and details about the augmentation process.
+the csv file is structured as follows:</p>
+<img alt="labels.csv structure" class="align-center" src="../../_images/labels_csv.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</section>
+</section>
+<section id="models">
+<h2>2. Models<a class="headerlink" href="#models" title="Link to this heading"></a></h2>
+<p>After exploring various egocentric datasets—starting from the <strong>Meccano dataset</strong> to the <strong>EPIC-Kitchens</strong> dataset—we identified several deep learning models that perform well on egocentric video data. Among the most promising architectures are:</p>
+<ul class="simple">
+<li><p><strong>SlowFast</strong></p></li>
+<li><p><strong>MoViNet</strong></p></li>
+<li><p><strong>EfficientNet</strong></p></li>
+</ul>
+<img alt="Egocentric datasets" class="align-center" src="../../_images/benchmark.gif" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p><strong>Useful Resources:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S1077314223001443">Meccano Dataset Paper (ScienceDirect)</a></p></li>
+<li><p><a class="reference external" href="https://paperswithcode.com/sota/action-recognition-on-epic-kitchens-100">EPIC-Kitchens on Papers With Code</a></p></li>
+</ul>
+<p>To evaluate the performance of these models, we fine-tuned pretrained versions of <strong>MoViNet</strong> and <strong>EfficientNet</strong> on our custom egocentric dataset and compared their results.</p>
+<section id="efficientnet">
+<h3>2.1 EfficientNet<a class="headerlink" href="#efficientnet" title="Link to this heading"></a></h3>
+<p>EfficientNet is a mobile friendly pure convolutional model (ConvNet) that proposes a new scaling method that uniformly scales all dimensions of depth/width/resolution using a simple yet highly effective compound coefficient.</p>
+<img alt="EfficientNet architecture" class="align-center" src="../../_images/efficientnet_architecture.png" />
+<p>We will use the pretrained <strong>EfficientNet-B0</strong> model on imagenet, which is the smallest and fastest variant.</p>
+<section id="a-video-frame-processing">
+<h4>a. Video Frame Processing<a class="headerlink" href="#a-video-frame-processing" title="Link to this heading"></a></h4>
+<p>To prepare the video frames for input into the EfficientNet model, we need to extract frames from the videos and preprocess them.</p>
+<p>These are the core utility functions responsible for extracting frames from a single video file and formatting them for the model.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">format_frames</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">output_size</span><span class="o">=</span><span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pad and resize an image from a video.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      frame: Image that needs to resized and padded.</span>
+<span class="sd">      output_size: Pixel size of the output frame image.</span>
+
+<span class="sd">    Return:</span>
+<span class="sd">      Formatted frame with padding of specified output size.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">frame</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">convert_image_dtype</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">frame</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">resize_with_pad</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="o">*</span><span class="n">output_size</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">frame</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">frames_from_video_file</span><span class="p">(</span><span class="n">video_path</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">,</span> <span class="n">output_size</span><span class="o">=</span><span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">),</span> <span class="n">frame_step</span><span class="o">=</span><span class="mi">15</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates frames from each video file present for each category.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      video_path: File path to the video.</span>
+<span class="sd">      n_frames: Number of frames to be created per video file.</span>
+<span class="sd">      output_size: Pixel size of the output frame image.</span>
+<span class="sd">      frame_step: The interval between frames to be captured.</span>
+
+<span class="sd">    Return:</span>
+<span class="sd">      An NumPy array of frames in the shape of (n_frames, height, width, channels).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">src</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">video_path</span><span class="p">))</span>
+
+    <span class="n">video_length</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_FRAME_COUNT</span><span class="p">)</span>
+    <span class="n">need_length</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">n_frames</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">frame_step</span>
+
+    <span class="k">if</span> <span class="n">need_length</span> <span class="o">&gt;</span> <span class="n">video_length</span><span class="p">:</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">max_start</span> <span class="o">=</span> <span class="n">video_length</span> <span class="o">-</span> <span class="n">need_length</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">src</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_POS_FRAMES</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span>
+    <span class="c1"># ret is a boolean indicating whether read was successful, frame is the image itself</span>
+    <span class="n">ret</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">ret</span><span class="p">:</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">format_frames</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">output_size</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_frames</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">frame_step</span><span class="p">):</span>
+            <span class="n">ret</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">ret</span><span class="p">:</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="n">format_frames</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">output_size</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If the video ends early, pad with black frames</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+    <span class="n">src</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">result</span><span class="p">)[</span><span class="o">...</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span> <span class="c1"># Convert from BGR (cv2) to RGB</span>
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+</div>
+<p><strong>Explanation:</strong></p>
+<ul class="simple">
+<li><p><strong>`format_frames`</strong>: Takes a single image (a frame), converts its pixel values to a floating-point format (from 0-255 to 0-1), and then resizes it to a fixed <cite>224x224</cite> size while preserving the aspect ratio by adding padding. This ensures all input to the model is uniform.</p></li>
+<li><p><strong>`frames_from_video_file`</strong>: This function reads a video file. To ensure the model doesn’t just learn the beginning of videos, it randomly selects a start point. It then loops through the video, grabbing <cite>n_frames</cite> (16) at a specified interval (<cite>frame_step=15</cite>). This “sampling” reduces redundancy and captures motion over time. Finally, it formats each frame and returns them as a single NumPy array.</p></li>
+</ul>
+</section>
+<section id="b-from-video-frames-to-tensorflow-dataset">
+<h4>b. from Video Frames to TensorFlow Dataset<a class="headerlink" href="#b-from-video-frames-to-tensorflow-dataset" title="Link to this heading"></a></h4>
+<p>This class acts as a bridge between our raw data files and TensorFlow. It’s a Python generator that yields video frames and labels one by one, which is highly memory-efficient.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">FrameGenerator</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">,</span> <span class="n">split_df</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">split_df</span> <span class="o">=</span> <span class="n">split_df</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">=</span> <span class="n">n_frames</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">training</span> <span class="o">=</span> <span class="n">training</span>
+
+        <span class="c1"># Combine the data directory with the relative video paths from the DataFrame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">video_paths</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span> <span class="o">/</span> <span class="n">path</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_df</span><span class="p">[</span><span class="s1">&#39;video_path&#39;</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_df</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This method is called when the generator is used.&quot;&quot;&quot;</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">video_paths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
+            <span class="c1"># Shuffle the data before each epoch during training</span>
+            <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
+            <span class="n">video_frames</span> <span class="o">=</span> <span class="n">frames_from_video_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span>
+            <span class="c1"># &#39;yield&#39; turns this function into a generator</span>
+            <span class="k">yield</span> <span class="n">video_frames</span><span class="p">,</span> <span class="n">label</span>
+</pre></div>
+</div>
+<p><strong>Explanation:</strong></p>
+<ul class="simple">
+<li><p>The <cite>__init__</cite> method initializes the generator with the dataset details: the path to the videos and the DataFrame containing the file paths and labels for a specific split (train, validation, or test).</p></li>
+<li><p>The <cite>__call__</cite> method makes the class instance callable like a function. It pairs up video paths with their labels. If it’s for the <cite>training</cite> set, it shuffles this list to ensure the model sees the data in a random order in every epoch.</p></li>
+<li><p>It then iterates through these pairs, uses the <cite>frames_from_video_file</cite> function to get the processed frames for each video, and <cite>yields</cite> the frames and the corresponding label. <cite>yield</cite> is like <cite>return</cite> but it doesn’t stop the function, allowing it to produce a sequence of values over time.</p></li>
+</ul>
+</section>
+<section id="c-data-loading-and-splitting">
+<h4>c. Data Loading and Splitting<a class="headerlink" href="#c-data-loading-and-splitting" title="Link to this heading"></a></h4>
+<p>This section handles loading the <cite>labels.csv</cite> file and splitting the entire dataset into training, validation, and test sets. This is a crucial step for robust model evaluation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load the CSV file containing video paths and labels</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">/</span> <span class="s2">&quot;labels.csv&quot;</span><span class="p">)</span>
+
+<span class="c1"># --- Stratified Split: 70% train, 15% validation, 15% test ---</span>
+
+<span class="c1"># First, split into 70% train and 30% temporary set</span>
+<span class="n">train_df</span><span class="p">,</span> <span class="n">temp_df</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">,</span>
+    <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">stratify</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">],</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># Next, split the temporary set equally into validation and test sets</span>
+<span class="n">val_df</span><span class="p">,</span> <span class="n">test_df</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">temp_df</span><span class="p">,</span>
+    <span class="n">test_size</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">stratify</span><span class="o">=</span><span class="n">temp_df</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">],</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Train set: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_df</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validation set: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">val_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">val_df</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test set: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">test_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">test_df</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Explanation:</strong></p>
+<ul class="simple">
+<li><p>The code loads the <cite>labels.csv</cite> file into a pandas DataFrame.</p></li>
+<li><p>It performs a two-step split to create three datasets. This is a standard practice.</p></li>
+<li><p><cite>stratify=df[‘label’]</cite> is a critical argument. It ensures that the proportion of each class (label) is the same in the training, validation, and test sets as it is in the original dataset. This prevents a situation where, for example, the training set has many examples of one action but the test set has none.</p></li>
+<li><p><cite>random_state=42</cite> ensures that the split is reproducible. Anyone running this code will get the exact same split.</p></li>
+</ul>
+</section>
+<section id="d-creating-tensorflow-dataset-objects">
+<h4>d. Creating TensorFlow <cite>Dataset</cite> Objects<a class="headerlink" href="#d-creating-tensorflow-dataset-objects" title="Link to this heading"></a></h4>
+<p>This is the final step, where the <cite>FrameGenerator</cite> is used to create efficient <cite>tf.data.Dataset</cite> objects. These objects are highly optimized for feeding data into a TensorFlow model during training and evaluation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Create Generator Instances ---</span>
+<span class="n">train_generator</span> <span class="o">=</span> <span class="n">FrameGenerator</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">train_df</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">val_generator</span> <span class="o">=</span> <span class="n">FrameGenerator</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">val_df</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">test_generator</span> <span class="o">=</span> <span class="n">FrameGenerator</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">test_df</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># --- Define the output signature for the datasets ---</span>
+<span class="n">output_signature</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">TensorSpec</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">TensorSpec</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># --- Create TensorFlow Datasets from Generators ---</span>
+<span class="n">train_ds</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="o">.</span><span class="n">from_generator</span><span class="p">(</span><span class="n">train_generator</span><span class="p">,</span> <span class="n">output_signature</span><span class="o">=</span><span class="n">output_signature</span><span class="p">)</span>
+<span class="n">val_ds</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="o">.</span><span class="n">from_generator</span><span class="p">(</span><span class="n">val_generator</span><span class="p">,</span> <span class="n">output_signature</span><span class="o">=</span><span class="n">output_signature</span><span class="p">)</span>
+<span class="n">test_ds</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="o">.</span><span class="n">from_generator</span><span class="p">(</span><span class="n">test_generator</span><span class="p">,</span> <span class="n">output_signature</span><span class="o">=</span><span class="n">output_signature</span><span class="p">)</span>
+
+<span class="c1"># --- Batch and Prefetch the Datasets for Performance ---</span>
+<span class="n">train_ds</span> <span class="o">=</span> <span class="n">train_ds</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">drop_remainder</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">val_ds</span> <span class="o">=</span> <span class="n">val_ds</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">drop_remainder</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">test_ds</span> <span class="o">=</span> <span class="n">test_ds</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">drop_remainder</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Prefetch allows the next batch to be prepared while the current one is being processed</span>
+<span class="n">AUTOTUNE</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">AUTOTUNE</span>
+<span class="n">train_ds</span> <span class="o">=</span> <span class="n">train_ds</span><span class="o">.</span><span class="n">prefetch</span><span class="p">(</span><span class="n">buffer_size</span><span class="o">=</span><span class="n">AUTOTUNE</span><span class="p">)</span>
+<span class="n">val_ds</span> <span class="o">=</span> <span class="n">val_ds</span><span class="o">.</span><span class="n">prefetch</span><span class="p">(</span><span class="n">buffer_size</span><span class="o">=</span><span class="n">AUTOTUNE</span><span class="p">)</span>
+<span class="n">test_ds</span> <span class="o">=</span> <span class="n">test_ds</span><span class="o">.</span><span class="n">prefetch</span><span class="p">(</span><span class="n">buffer_size</span><span class="o">=</span><span class="n">AUTOTUNE</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Explanation:</strong></p>
+<ul class="simple">
+<li><p>Instances of <cite>FrameGenerator</cite> are created for each data split.</p></li>
+<li><p><cite>tf.data.Dataset.from_generator</cite> is the key function that wraps the Python generator. The <cite>output_signature</cite> tells TensorFlow what kind of data (shape and type) to expect, which allows it to build an efficient computation graph.</p></li>
+<li><p><cite>.batch(batch_size)</cite> groups the individual samples into batches (groups of 2 in this case).</p></li>
+<li><p><cite>.prefetch(buffer_size=tf.data.AUTOTUNE)</cite> is a crucial performance optimization. It allows the data loading pipeline (running on the CPU) to stay ahead of the model training (running on the GPU/TPU), ensuring the model never has to wait for data. <cite>AUTOTUNE</cite> lets TensorFlow decide the optimal number of batches to prefetch.</p></li>
+</ul>
+</section>
+<section id="e-model-training">
+<h4>e. Model Training<a class="headerlink" href="#e-model-training" title="Link to this heading"></a></h4>
+<p>We begin by loading the EfficientNet model with pre-trained weights and adapting it to our specific classification task.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create model</span>
+<span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">input_shape</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Rescaling</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mi">255</span><span class="p">)(</span><span class="n">inputs</span><span class="p">)</span>
+
+<span class="c1"># Load EfficientNetB0 base model</span>
+<span class="n">base_model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">applications</span><span class="o">.</span><span class="n">EfficientNetB0</span><span class="p">(</span>
+   <span class="n">include_top</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+   <span class="n">weights</span><span class="o">=</span><span class="s1">&#39;imagenet&#39;</span><span class="p">,</span>
+   <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">base_model</span><span class="o">.</span><span class="n">trainable</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="c1"># Apply TimeDistributed with fixed shape expectations</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">TimeDistributed</span><span class="p">(</span><span class="n">base_model</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">GlobalAveragePooling3D</span><span class="p">()(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">outputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">9</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># Assuming 9 classes</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">)</span>
+
+<span class="c1"># Compile model</span>
+<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+   <span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span>
+   <span class="n">loss</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">SparseCategoricalCrossentropy</span><span class="p">(</span><span class="n">from_logits</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+   <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="c1"># Train model</span>
+<span class="n">history</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+   <span class="n">train_ds</span><span class="p">,</span>
+   <span class="n">epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+   <span class="n">validation_data</span><span class="o">=</span><span class="n">val_ds</span><span class="p">,</span>
+   <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span>
+      <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">EarlyStopping</span><span class="p">(</span><span class="n">patience</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">monitor</span><span class="o">=</span><span class="s1">&#39;val_loss&#39;</span><span class="p">),</span>
+      <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">ModelCheckpoint</span><span class="p">(</span>
+            <span class="n">filepath</span><span class="o">=</span><span class="s1">&#39;best_model_train_test_val.h5&#39;</span><span class="p">,</span>
+            <span class="n">monitor</span><span class="o">=</span><span class="s1">&#39;val_accuracy&#39;</span><span class="p">,</span>
+            <span class="n">save_best_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span>
+      <span class="p">)</span>
+   <span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<img alt="EfficientNet training history" class="align-center" src="../../_images/efficientnet_summary.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>The following are the validation loss and accuracy observed during training:</p>
+<img alt="EfficientNet validation loss and accuracy" class="align-center" src="../../_images/training_history_efficientnet.png" />
+</section>
+<section id="f-model-evaluation">
+<h4>f. Model Evaluation<a class="headerlink" href="#f-model-evaluation" title="Link to this heading"></a></h4>
+<p>After training, we evaluate the model’s performance on the test set to assess its generalization capabilities.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">evaluate_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">test_ds</span><span class="p">,</span> <span class="n">class_names</span><span class="p">):</span>
+   <span class="n">y_true</span> <span class="o">=</span> <span class="p">[]</span>
+   <span class="n">y_pred</span> <span class="o">=</span> <span class="p">[]</span>
+
+   <span class="k">for</span> <span class="n">videos</span><span class="p">,</span> <span class="n">labels</span> <span class="ow">in</span> <span class="n">val_ds</span><span class="o">.</span><span class="n">unbatch</span><span class="p">():</span>
+      <span class="n">preds</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">videos</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+      <span class="n">pred_label</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+      <span class="n">y_true</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+      <span class="n">y_pred</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pred_label</span><span class="p">)</span>
+
+   <span class="c1"># Print classification report</span>
+   <span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">target_names</span><span class="o">=</span><span class="n">class_names</span><span class="p">))</span>
+
+   <span class="c1"># Confusion matrix</span>
+   <span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+   <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+   <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">cm</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues&#39;</span><span class="p">,</span>
+               <span class="n">xticklabels</span><span class="o">=</span><span class="n">class_names</span><span class="p">,</span> <span class="n">yticklabels</span><span class="o">=</span><span class="n">class_names</span><span class="p">)</span>
+   <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Predicted&#39;</span><span class="p">)</span>
+   <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;True&#39;</span><span class="p">)</span>
+   <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Confusion Matrix&#39;</span><span class="p">)</span>
+   <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+   <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;confusion_matrix.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>the confusion matrix for the EfficientNet model is as follows:</p>
+<img alt="EfficientNet confusion matrix" class="align-center" src="../../_images/confusion_matrix_efficientnet.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>the classification report is as follows:</p>
+<img alt="EfficientNet classification report" class="align-center" src="../../_images/classification_report_efficientnet.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</section>
+</section>
+<section id="movinet">
+<h3>2.2 MoViNet<a class="headerlink" href="#movinet" title="Link to this heading"></a></h3>
+<p>MoViNet is a model designed for efficient video understanding, particularly in mobile and edge devices. It uses a combination of depthwise separable convolutions and temporal convolutions to capture both spatial and temporal features effectively.</p>
+<img alt="MoViNet architecture" class="align-center" src="../../_images/movinet_architecture.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<section id="a-video-frame-processing-from-video-frames-to-tensorflow-dataset-data-loading-and-splitting">
+<h4>a. Video Frame Processing &amp; from video frames to TensorFlow dataset &amp; Data Loading and Splitting<a class="headerlink" href="#a-video-frame-processing-from-video-frames-to-tensorflow-dataset-data-loading-and-splitting" title="Link to this heading"></a></h4>
+<p>the same work done for EfficientNet applies here as well. The <cite>FrameGenerator</cite> class and the data loading process remain unchanged.</p>
+</section>
+<section id="b-training-the-movinet-model">
+<h4>b. Training the MoViNet Model<a class="headerlink" href="#b-training-the-movinet-model" title="Link to this heading"></a></h4>
+<p>we load the MoViNet straming model with pre-trained weights trained on the Kinetics-600 dataset, which is a large-scale video action recognition dataset.
+and we adapt it to our specific classification task.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Create a temporary non-causal model to load the full checkpoint</span>
+<span class="n">temp_backbone_non_causal</span> <span class="o">=</span> <span class="n">movinet</span><span class="o">.</span><span class="n">Movinet</span><span class="p">(</span><span class="n">model_id</span><span class="o">=</span><span class="n">model_id</span><span class="p">,</span> <span class="n">causal</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">temp_model_for_loading</span> <span class="o">=</span> <span class="n">movinet_model</span><span class="o">.</span><span class="n">MovinetClassifier</span><span class="p">(</span><span class="n">backbone</span><span class="o">=</span><span class="n">temp_backbone_non_causal</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+<span class="n">dummy_input_shape_for_loading</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">temp_model_for_loading</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">dummy_input_shape_for_loading</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">checkpoint_path</span><span class="p">:</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loading pre-trained weights into temporary non-causal model...&quot;</span><span class="p">)</span>
+   <span class="n">load_checkpoint</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">Checkpoint</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">temp_model_for_loading</span><span class="p">)</span>
+   <span class="n">status</span> <span class="o">=</span> <span class="n">load_checkpoint</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">checkpoint_path</span><span class="p">)</span>
+   <span class="k">try</span><span class="p">:</span>
+      <span class="n">status</span><span class="o">.</span><span class="n">assert_existing_objects_matched</span><span class="p">()</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Successfully loaded pre-trained weights into temporary model.&quot;</span><span class="p">)</span>
+   <span class="k">except</span> <span class="ne">AssertionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: Weight loading status: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">. Some weights might not have matched.&quot;</span><span class="p">)</span>
+      <span class="n">status</span><span class="o">.</span><span class="n">expect_partial</span><span class="p">()</span>
+<span class="k">else</span><span class="p">:</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Skipping weight loading as checkpoint path is not available.&quot;</span><span class="p">)</span>
+
+<span class="c1"># 2. Create the backbone for training (causal, but NOT using external states for fit())</span>
+<span class="n">training_backbone</span> <span class="o">=</span> <span class="n">movinet</span><span class="o">.</span><span class="n">Movinet</span><span class="p">(</span>
+   <span class="n">model_id</span><span class="o">=</span><span class="n">model_id</span><span class="p">,</span>
+   <span class="n">causal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+   <span class="n">use_external_states</span><span class="o">=</span><span class="kc">False</span> <span class="c1"># Important for training with model.fit()</span>
+<span class="p">)</span>
+
+<span class="c1"># 3. Create the model for training</span>
+<span class="c1"># output_states=False because standard loss functions don&#39;t expect states</span>
+<span class="n">model_for_training</span> <span class="o">=</span> <span class="n">movinet_model</span><span class="o">.</span><span class="n">MovinetClassifier</span><span class="p">(</span>
+   <span class="n">backbone</span><span class="o">=</span><span class="n">training_backbone</span><span class="p">,</span>
+   <span class="n">num_classes</span><span class="o">=</span><span class="n">num_classes</span><span class="p">,</span> <span class="c1"># Your dataset&#39;s number of classes</span>
+   <span class="n">output_states</span><span class="o">=</span><span class="kc">False</span>      <span class="c1"># Important for training with model.fit()</span>
+<span class="p">)</span>
+
+<span class="c1"># 4. Build the training model</span>
+<span class="n">model_for_training</span><span class="o">.</span><span class="n">build</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+
+<span class="c1"># 5. Transfer backbone weights from the loaded non-causal backbone to the training backbone</span>
+<span class="k">if</span> <span class="n">checkpoint_path</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">temp_model_for_loading</span><span class="p">,</span> <span class="s1">&#39;backbone&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">model_for_training</span><span class="p">,</span> <span class="s1">&#39;backbone&#39;</span><span class="p">):</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Transferring backbone weights from temporary model to training model...&quot;</span><span class="p">)</span>
+   <span class="k">try</span><span class="p">:</span>
+      <span class="n">model_for_training</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">set_weights</span><span class="p">(</span><span class="n">temp_model_for_loading</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">get_weights</span><span class="p">())</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Successfully transferred backbone weights to training model.&quot;</span><span class="p">)</span>
+   <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error transferring backbone weights to training model: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Skipping backbone weight transfer to training model.&quot;</span><span class="p">)</span>
+
+<span class="c1"># 6. Set backbone trainability</span>
+<span class="n">model_for_training</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">trainable</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="c1"># 7. fine tune the model</span>
+<span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">loss_obj</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">SparseCategoricalCrossentropy</span><span class="p">(</span><span class="n">from_logits</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">model_for_training</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+   <span class="n">loss</span><span class="o">=</span><span class="n">loss_obj</span><span class="p">,</span>
+   <span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span>
+   <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">history</span> <span class="o">=</span> <span class="n">model_for_training</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+   <span class="n">train_ds</span><span class="p">,</span>
+   <span class="n">validation_data</span><span class="o">=</span><span class="n">val_ds</span><span class="p">,</span>
+   <span class="n">epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+   <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The following are the validation loss and accuracy observed during training:</p>
+<img alt="MoViNet training history" class="align-center" src="../../_images/training_history_movinet.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</section>
+<section id="c-model-evaluation">
+<h4>c. Model Evaluation<a class="headerlink" href="#c-model-evaluation" title="Link to this heading"></a></h4>
+<p>After training, we evaluate the MoViNet model’s performance on the test set to assess its generalization capabilities.</p>
+<p>the confusion matrix for the EfficientNet model is as follows:</p>
+<img alt="MoViNet confusion matrix" class="align-center" src="../../_images/confusion_matrix_movinet.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>the classification report is as follows:</p>
+<img alt="MoViNet classification report" class="align-center" src="../../_images/classification_report_movinet.png" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</section>
+<section id="e-movinet-inference-example">
+<h4>e. Movinet inference example<a class="headerlink" href="#e-movinet-inference-example" title="Link to this heading"></a></h4>
+<p>To demonstrate the MoViNet model’s inference capabilities, we can use a sample video from our dataset.
+the fllowing video is an example of the real time prediction of the MoViNet model on a video clip of the action “hand_tighten_bolts”.</p>
+<img alt="MoViNet inference example" class="align-center" src="../../_images/movinet_inference_example.gif" />
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</section>
+</section>
+<section id="conclusion">
+<h3>3.3 Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading"></a></h3>
+<p>We will take the MoViNet model as the best performing model for our action recognition task, as it achieved a higher accuracy and better generalization on the test set compared to EfficientNet.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="2_Team.html" class="btn btn-neutral float-left" title="II. Team" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="4_Object_detection.html" class="btn btn-neutral float-right" title="III-Object Detection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Changing flat tyre assistant.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

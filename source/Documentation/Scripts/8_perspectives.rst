@@ -1,0 +1,36 @@
+VIII – Future Enhancements
+=========================
+
+While the current assistant system demonstrates promising results, there are several areas identified for improvement to enhance robustness, generalizability, and real-world usability.
+
+1. Dataset Expansion and Diversity
+----------------------------------
+One of the main challenges we encountered is the **lack of data variability**, which increases the risk of **overfitting** and limits the model's performance in diverse environments.
+
+- To address this, we plan to:
+
+  - **Collect additional recordings** across different lighting, angles, and backgrounds.
+
+  - **Explore online sources** to find more diverse examples, especially for action recognition and object detection.
+
+2. Mobile Application Integration
+---------------------------------
+A major goal is to deploy the assistant as a **mobile application**, making it more accessible and practical for real-time roadside assistance.
+
+- We aim to:
+
+  - Optimize the models for mobile inference using frameworks like **TensorFlow Lite** or **ONNX Mobile**.
+
+  - Integrate a clean and responsive mobile UI for user interaction and guidance.
+
+3. Algorithmic Improvements
+---------------------------
+To improve speed, accuracy, and energy efficiency—especially for mobile use cases—we plan to explore alternative and more efficient methods.
+
+- For **action recognition**, we will:
+
+  - Investigate **3D hand-based approaches**, which can offer more lightweight and intuitive gesture recognition.
+
+  - Experiment with real-time transformer-based models for better temporal understanding.
+
+These improvements will help make the assistant more reliable, scalable, and deployable in real-world situations.

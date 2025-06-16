@@ -1,0 +1,171 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VII - Usage &mdash; Changing flat tyre assistant  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="VIII – Future Enhancements" href="8_perspectives.html" />
+    <link rel="prev" title="VI – Assistant Algorithm" href="6_Algorithme.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Changing flat tyre assistant
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table des matières:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="1_Introduction.html">I-Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_Team.html">II. Team</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_Action_recognition.html">III. Action Recognition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_Object_detection.html">III-Object Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_Assistant_chatbot.html">IV- Voice Assistant</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_Algorithme.html">VI – Assistant Algorithm</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">VII - Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#clone-the-repository">1. Clone the Repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#create-and-activate-virtual-environment-recommended">2. Create and Activate Virtual Environment (Recommended)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-dependencies">3. Install Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-the-system">4. Run the System</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="8_perspectives.html">VIII – Future Enhancements</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Changing flat tyre assistant</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">VII - Usage</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/Documentation/Scripts/7_Installation_And_Usage.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="vii-usage">
+<h1>VII - Usage<a class="headerlink" href="#vii-usage" title="Link to this heading"></a></h1>
+<p>First, ensure you have a <strong>CUDA/cuDNN version compatible with your GPU</strong> installed.</p>
+<section id="clone-the-repository">
+<h2>1. Clone the Repository<a class="headerlink" href="#clone-the-repository" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/sohaibdaoudi/ChangingTireAssistant_CV_NLP_Project.git
+</pre></div>
+</div>
+</section>
+<section id="create-and-activate-virtual-environment-recommended">
+<h2>2. Create and Activate Virtual Environment (Recommended)<a class="headerlink" href="#create-and-activate-virtual-environment-recommended" title="Link to this heading"></a></h2>
+<p><strong>For ``venv`` users:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create the virtual environment with Python 3.9</span>
+python3.9<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+
+<span class="c1"># Activate the environment</span>
+<span class="c1"># On macOS/Linux:</span>
+<span class="nb">source</span><span class="w"> </span>venv/bin/activate
+
+<span class="c1"># On Windows:</span>
+venv<span class="se">\S</span>cripts<span class="se">\a</span>ctivate
+
+<span class="c1"># Change to project directory after activating environment</span>
+<span class="nb">cd</span><span class="w"> </span>C:<span class="se">\p</span>ath<span class="se">\t</span>o<span class="se">\f</span>older<span class="se">\C</span>hangingTireAssistant_CV_NLP_Project<span class="se">\A</span>lgorithm_V4
+</pre></div>
+</div>
+<p><strong>For ``conda`` users:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create the conda environment with Python 3.9</span>
+conda<span class="w"> </span>create<span class="w"> </span>--name<span class="w"> </span>tire-assistant<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.9
+
+<span class="c1"># Activate the environment</span>
+conda<span class="w"> </span>activate<span class="w"> </span>tire-assistant
+
+<span class="c1"># Change to project directory after activating environment</span>
+<span class="nb">cd</span><span class="w"> </span>C:<span class="se">\p</span>ath<span class="se">\t</span>o<span class="se">\f</span>older<span class="se">\C</span>hangingTireAssistant_CV_NLP_Project<span class="se">\A</span>lgorithm_V4
+</pre></div>
+</div>
+</section>
+<section id="install-dependencies">
+<h2>3. Install Dependencies<a class="headerlink" href="#install-dependencies" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>Algorithm_V4/requirements.txt
+</pre></div>
+</div>
+</section>
+<section id="run-the-system">
+<h2>4. Run the System<a class="headerlink" href="#run-the-system" title="Link to this heading"></a></h2>
+<p>This is the main script to run the full assistant:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>Algorithm_V4/AlgoV4.py
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="6_Algorithme.html" class="btn btn-neutral float-left" title="VI – Assistant Algorithm" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="8_perspectives.html" class="btn btn-neutral float-right" title="VIII – Future Enhancements" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Changing flat tyre assistant.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

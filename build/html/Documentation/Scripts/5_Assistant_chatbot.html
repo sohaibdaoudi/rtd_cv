@@ -1,0 +1,226 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IV- Voice Assistant &mdash; Changing flat tyre assistant  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="VI – Assistant Algorithm" href="6_Algorithme.html" />
+    <link rel="prev" title="III-Object Detection" href="4_Object_detection.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Changing flat tyre assistant
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table des matières:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="1_Introduction.html">I-Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_Team.html">II. Team</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_Action_recognition.html">III. Action Recognition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_Object_detection.html">III-Object Detection</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">IV- Voice Assistant</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#intent-classification-model">4.1 Intent Classification Model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#project-evolution-from-generation-to-classification">4.1.1 Project Evolution: From Generation to Classification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dataset-faq-json">4.1.2 Dataset: faq.json</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#file-structure">4.1.2.1 File Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#intent-categories">4.1.2.2 Intent Categories</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#model-architecture-and-training-train-py">4.1.3 Model Architecture and Training (train.py)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#real-time-voice-assistant-application-main-py">4.2 Real-Time Voice Assistant Application (main.py)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#system-components">4.2.1 System Components</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#operational-workflow">4.2.2 Operational Workflow</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="6_Algorithme.html">VI – Assistant Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="7_Installation_And_Usage.html">VII - Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="8_perspectives.html">VIII – Future Enhancements</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Changing flat tyre assistant</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">IV- Voice Assistant</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/Documentation/Scripts/5_Assistant_chatbot.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="iv-voice-assistant">
+<h1>IV- Voice Assistant<a class="headerlink" href="#iv-voice-assistant" title="Link to this heading"></a></h1>
+<p>Following the initial object detection phase, the Voice Assistant represents the interactive, core guidance system of the project. Once the prerequisite tools have been identified, this module takes over to provide step-by-step spoken instructions to the user. This is achieved not by generating new text, but by accurately classifying the user’s spoken questions into predefined categories (intents) and delivering a corresponding, pre-written answer. This chapter details the complete workflow for developing the voice assistant, from the strategic pivot in model selection to the intricacies of the training data, the final model architecture, and the real-time application that brings it all to life.</p>
+<section id="intent-classification-model">
+<h2>4.1 Intent Classification Model<a class="headerlink" href="#intent-classification-model" title="Link to this heading"></a></h2>
+<p>The “brain” of the voice assistant is the intent classification model, a specialized neural network trained to understand the user’s goal based on their question.</p>
+<section id="project-evolution-from-generation-to-classification">
+<h3>4.1.1 Project Evolution: From Generation to Classification<a class="headerlink" href="#project-evolution-from-generation-to-classification" title="Link to this heading"></a></h3>
+<p>The initial goal for this project was to build a sequence-to-sequence (seq2seq) model. A seq2seq model is a more advanced type of neural network that learns to generate answers from scratch, word by word, based on the user’s question. This would allow for more dynamic and flexible responses.</p>
+<p>However, early experiments with our generated faq.json data showed that this approach did not perform well. Seq2seq models require a very large and varied amount of training data to learn the nuances of language and generate coherent, accurate sentences. The existing dataset, while excellent for classification, was not large enough for this complex generative task.</p>
+<p>Due to these data limitations, the project pivoted to a more robust and reliable method: <em>Intent Classification</em>. Instead of generating answers, the model now acts as a smart classifier. Its job is to understand the user’s question and classify it into a predefined intent. Once the intent is identified, the system simply looks up the corresponding pre-written answer. This approach is highly effective and guarantees that the user receives an accurate, well-formulated response.</p>
+<p>To further improve the classification model’s understanding of language, we integrated pre-trained <em>GloVe</em> word embeddings. These provide the model with a foundational knowledge of words and their relationships, which is crucial for achieving high accuracy without a massive custom dataset. The future goal remains to create or acquire a larger dataset to eventually revisit the more ambitious seq2seq approach.</p>
+</section>
+<section id="dataset-faq-json">
+<h3>4.1.2 Dataset: faq.json<a class="headerlink" href="#dataset-faq-json" title="Link to this heading"></a></h3>
+<p>The foundation of the intent classification model is the faq.json file. This file contains all the knowledge the assistant needs to map questions to answers.</p>
+<section id="file-structure">
+<h4>4.1.2.1 File Structure<a class="headerlink" href="#file-structure" title="Link to this heading"></a></h4>
+<p>The faq.json file is a list of JSON objects. Each object represents a single piece of training information and contains four key fields:</p>
+<ul class="simple">
+<li><p><em>id</em>: A unique identifier for the entry.</p></li>
+<li><p><em>question</em>: An example question that a user might ask. The model learns from these examples.</p></li>
+<li><p><em>intent</em>: The category or “topic” of the question. This is the label the model learns to predict.</p></li>
+<li><p><em>answer</em>: The canned response the assistant provides for that specific intent.</p></li>
+</ul>
+<p>An example object from the file:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;question&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Where do I place the jack?&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;intent&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Jack Placement&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;answer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Look for the jack point near the flat tire under the car frame; it&#39;s usually behind the front wheel or in front of the rear wheel.&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="intent-categories">
+<h4>4.1.2.2 Intent Categories<a class="headerlink" href="#intent-categories" title="Link to this heading"></a></h4>
+<p>The dataset is organized into the following specific intents, ensuring clear and distinct boundaries for the classification task:</p>
+<ul class="simple">
+<li><p><em>Preparation</em>: Initial steps before starting the work.</p></li>
+<li><p><em>Jack Placement</em>: Where to position the car jack.</p></li>
+<li><p><em>Loosening Lug Nuts</em>: How to loosen nuts before lifting.</p></li>
+<li><p><em>Order of Operations</em>: Clarifying the sequence of actions.</p></li>
+<li><p><em>Lifting</em>: How to raise the car.</p></li>
+<li><p><em>Removing Lug Nuts</em>: Taking the nuts and the flat tire off.</p></li>
+<li><p><em>Mounting</em>: Putting the spare tire on.</p></li>
+<li><p><em>Partial Tightening</em>: Tightening nuts while the car is raised.</p></li>
+<li><p><em>Final Tightening</em>: The final, secure tightening process.</p></li>
+<li><p><em>Cleanup</em>: What to do with tools and the flat tire afterwards.</p></li>
+<li><p><em>Missing Tool</em>: Handling the absence of a required tool.</p></li>
+<li><p><em>Stuck Lug Nut</em>: Dealing with a stubborn lug nut.</p></li>
+<li><p><em>Safety Check</em>: Ensuring the new tire is secure.</p></li>
+<li><p><em>Spare Tire Location</em>: Finding the spare tire.</p></li>
+<li><p><em>Tool List</em>: Listing all necessary tools.</p></li>
+<li><p><em>Unknown</em>: A catch-all for unrelated questions.</p></li>
+</ul>
+</section>
+</section>
+<section id="model-architecture-and-training-train-py">
+<h3>4.1.3 Model Architecture and Training (train.py)<a class="headerlink" href="#model-architecture-and-training-train-py" title="Link to this heading"></a></h3>
+<p>The training script (train.py) is responsible for building and training the neural network.</p>
+<p>The model is a Sequential stack of layers:
+1.  <em>Embedding Layer</em>: This layer converts words into numerical vectors. It is initialized with GloVe weights to leverage pre-existing language knowledge, and its weights are frozen (trainable=False) so this knowledge is not lost during training.
+2.  <em>Bidirectional LSTM Layers</em>: Two layers of Bidirectional LSTMs form the core of the model. They process the sentence forwards and backwards to understand the full context of the words in the question.
+3.  <em>Dropout Layers</em>: These layers randomly ignore some neurons during training to prevent the model from simply memorizing the training data (overfitting).
+4.  <em>Dense Layer</em>: The final layer makes the classification decision, outputting a probability score for each possible intent.</p>
+<p>The training process involves feeding the model the preprocessed questions and their corresponding intent labels from faq.json. The model then adjusts its parameters over multiple passes (epochs) to minimize its prediction errors, ultimately learning to map question patterns to the correct intents.</p>
+</section>
+</section>
+<section id="real-time-voice-assistant-application-main-py">
+<h2>4.2 Real-Time Voice Assistant Application (main.py)<a class="headerlink" href="#real-time-voice-assistant-application-main-py" title="Link to this heading"></a></h2>
+<p>The main.py script runs the live voice assistant, integrating all the necessary components to create an interactive experience.</p>
+<section id="system-components">
+<h3>4.2.1 System Components<a class="headerlink" href="#system-components" title="Link to this heading"></a></h3>
+<p>The application relies on several key libraries working in tandem:</p>
+<ul class="simple">
+<li><p><em>Vosk</em>: A lightweight, offline speech recognition library used to convert the user’s spoken words into text.</p></li>
+<li><p><em>TensorFlow/Keras</em>: Used to load our pre-trained intent classification model and make predictions on the text from Vosk.</p></li>
+<li><p><em>pyttsx3</em>: A text-to-speech (TTS) library that converts the assistant’s text answers into spoken audio.</p></li>
+<li><p><em>Sounddevice</em>: Manages the audio input from the microphone.</p></li>
+</ul>
+</section>
+<section id="operational-workflow">
+<h3>4.2.2 Operational Workflow<a class="headerlink" href="#operational-workflow" title="Link to this heading"></a></h3>
+<p>The assistant operates in a continuous loop with the following steps:</p>
+<ol class="arabic simple">
+<li><p><em>Listen</em>: The script uses sounddevice to capture audio from the microphone.</p></li>
+<li><p><em>Recognize Speech (Speech-to-Text)</em>: The captured audio is streamed to the Vosk engine, which processes it and returns the recognized text.</p></li>
+<li><p><em>Predict Intent</em>: The recognized text is passed to our trained TensorFlow model, which predicts the user’s intent.</p></li>
+<li><p><em>Retrieve Answer</em>: The script uses the predicted intent as a key to look up the correct, pre-written answer from the faq.json data.</p></li>
+<li><p><em>Speak (Text-to-Speech)</em>: The retrieved answer text is sent to the pyttsx3 engine, which vocalizes the response to the user.</p></li>
+<li><p><em>Repeat</em>: The assistant immediately returns to listening for the next command.</p></li>
+</ol>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="4_Object_detection.html" class="btn btn-neutral float-left" title="III-Object Detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="6_Algorithme.html" class="btn btn-neutral float-right" title="VI – Assistant Algorithm" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Changing flat tyre assistant.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
