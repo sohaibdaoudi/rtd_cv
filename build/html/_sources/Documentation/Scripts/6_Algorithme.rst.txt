@@ -1,27 +1,24 @@
 VI – Assistant Algorithm
 ========================
 
-With both the action recognition and object detection models in place, we can now define the assistant's logic for guiding a user through changing a flat tire.
+With the object detection, action recognition, and voice assistant models in place, we can now define the integrated logic for guiding a user through changing a flat tire. The system operates as a state machine, progressing through distinct phases.
 
+0. Initial Setup & Model Loading
+--------------------------------
 
-0. Loading Models
------------------
+At the start, the application performs several setup steps:
 
-At the start of the session, the assistant loads the required models into memory:
-
-- The **object detection model** for flat tire detection (`flatV2.pt`).
-- The **object detection model** for tool detection (`toolsV2.pt`).
-- The **action recognition model** (used later for guiding and verifying user actions).
-
-This ensures faster runtime and avoids delays during the step-by-step assistance process.
+1.  **Hardware Verification**: It checks for available GPUs for both PyTorch and TensorFlow to ensure optimal performance.
+2.  **Input Source Selection**: The user is prompted to choose an input source: a local webcam, a video file, or a network IP camera stream.
+3.  **Initial Model Loading**: The assistant pre-loads the first required model: the **object detection model** for flat tire detection (`flatV2.pt`). The other models (for tools and actions) are loaded dynamically as the state changes to conserve resources.
 
 .. code-block:: python
 
-   # --- Model Paths ---
-   flat_tire_model_path = r"C:\Users\SOHAIB\Desktop\Projects\COMPUTER VISION\Last models\flatV2.pt"
-   tools_model_path = r"C:\Users\SOHAIB\Desktop\Projects\COMPUTER VISION\Last models\toolsV2.pt"
-   action_weights_path = r'C:\Users\SOHAIB\Desktop\Projects\COMPUTER VISION\Last models\realtimemovinet\Streaming\streaming_movinet_weights.h5'
-   action_config_path = r'C:\Users\SOHAIB\Desktop\Projects\COMPUTER VISION\Last models\realtimemovinet\Streaming\streaming_model_config.json'
+   # --- Model Paths (using relative paths) ---
+   flat_tire_model_path = r"flatV2.pt"
+   tools_model_path = r"toolsV2.pt"
+   action_weights_path = r'Streaming\streaming_movinet_weights.h5'
+   action_config_path = r'Streaming\streaming_model_config.json'
 
    # --- State Machine Initialization ---
    app_state = STATE_DETECTING_FLAT_TIRE
@@ -31,8 +28,9 @@ This ensures faster runtime and avoids delays during the step-by-step assistance
    model = YOLO(flat_tire_model_path, task='detect')
    labels = model.names
 
-   # Action recognizer is initialized later to save memory
+   # Action recognizer and voice assistant are initialized later
    action_recognizer = None
+   intent_classifier = None
 
 
 1. Object Detection Phase
@@ -47,101 +45,33 @@ The assistant begins by continuously analyzing frames from the user's camera usi
 
    # --- STATE: DETECTING_FLAT_TIRE ---
    if app_state == STATE_DETECTING_FLAT_TIRE:
-       display_message(frame, "STEP 1: Find the Flat Tire", 
-                       Y_OFFSET_STEP_TITLE, color=(200, 200, 200))
-       
-       # Run detection
-       results = model(frame, verbose=False, conf=TOOLS_CONFIDENCE_THRESHOLD, device=torch_device)
-       current_detections = results[0].boxes if results and results[0].boxes else []
-       
-       found_flat_tire = False
-       for det in current_detections:
-           class_id = int(det.cls.item())
-           class_name = labels.get(class_id, f"ID:{class_id}")
-           
-           if class_name == FLAT_TIRE_CLASS_NAME:
-               found_flat_tire = True
-               conf = det.conf.item()
-               xyxy = det.xyxy.cpu().numpy().squeeze().astype(int)
-               
-               # Draw bounding box
-               cv2.rectangle(frame, (xyxy[0], xyxy[1]), 
-                             (xyxy[2], xyxy[3]), (0, 255, 0), 2)
-               cv2.putText(frame, f'{class_name}: {conf:.2f}', 
-                           (xyxy[0], xyxy[1] - 10), 
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-               break
+       # ... (display and detection logic) ...
        
        if found_flat_tire:
-           # Reset lost timer if re-acquired
-           if flat_tire_lost_temporarily_time is not None:
-               flat_tire_lost_temporarily_time = None
-           
-           # Start validation timer if not already running
+           # Start or continue validation timer
            if flat_tire_validation_start_time is None:
                flat_tire_validation_start_time = time.time()
            
-           # Check validation duration
            elapsed = time.time() - flat_tire_validation_start_time
            if elapsed >= VALIDATION_DURATION_SEC:
-               display_message(frame, "Flat Tire Confirmed!", 
-                               Y_OFFSET_STATUS_VALIDATION, color=(0, 255, 0))
-               cv2.imshow('Tire Assistant', frame)
-               cv2.waitKey(1500)
-               
                # Transition to next state
                app_state = STATE_COLLECTING_TOOLS
                model = YOLO(tools_model_path, task='detect') # Switch to tools model
-               labels = model.names
                print("INFO: Transitioned to COLLECTING_TOOLS state")
-           else:
-               display_message(frame, 
-                               f"Confirming Flat Tire... {VALIDATION_DURATION_SEC - elapsed:.1f}s", 
-                               Y_OFFSET_STATUS_VALIDATION, color=(0, 255, 255))
        else:
-           # Handle temporary loss (Grace Period)
-           if flat_tire_validation_start_time is not None:
-               if flat_tire_lost_temporarily_time is None:
-                   flat_tire_lost_temporarily_time = time.time()
-               
-               time_since_lost = time.time() - flat_tire_lost_temporarily_time
-               if time_since_lost < GRACE_PERIOD_DURATION_SEC:
-                   display_message(frame, 
-                                   f"Searching... {GRACE_PERIOD_DURATION_SEC - time_since_lost:.1f}s", 
-                                   Y_OFFSET_STATUS_VALIDATION, color=(255, 200, 0))
-               else:
-                   # Reset timer if grace period is exceeded
-                   flat_tire_validation_start_time = None
-                   flat_tire_lost_temporarily_time = None
-                   display_message(frame, "Point camera at the tire", 
-                                   Y_OFFSET_MAIN_INSTRUCTION)
-           else:
-               display_message(frame, "Point camera at the tire", 
-                               Y_OFFSET_MAIN_INSTRUCTION)
+           # Handle grace period if tire is temporarily lost
+           # ...
 
 Step 2: Detecting Required Tools
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The YOLO model is switched to ``toolsV2.pt`` to recognize the ``Car_Jack`` and ``Wheel_Wrench``. Each tool is monitored independently with the same 5-second validation timer and 2.5-second grace period. The interface shows real-time updates, indicating which tools are **“Confirmed”** and which are **“Needed”**. Once all tools are confirmed, the system transitions to the next phase.
+The YOLO model is switched to ``toolsV2.pt`` to recognize the ``Car_Jack`` and ``Wheel_Wrench``. Each tool is monitored independently with the same 5-second validation timer and 2.5-second grace period. The interface shows real-time updates, indicating which tools are **“Confirmed”** and which are **“Needed”**. Once all tools are confirmed, the system transitions to the action recognition phase.
 
 .. code-block:: python
 
    # --- STATE: COLLECTING_TOOLS (SIMULTANEOUS VALIDATION) ---
    elif app_state == STATE_COLLECTING_TOOLS:
-       display_message(frame, "STEP 2: Collect Required Tools", 
-                       Y_OFFSET_STEP_TITLE, color=(200, 200, 200))
-       
-       # Run detection
-       results = model(frame, verbose=False, conf=TOOLS_CONFIDENCE_THRESHOLD, device=torch_device)
-       current_yolo_detections = results[0].boxes if results and results[0].boxes else []
-       
-       detected_tools_in_frame_names = set()
-       for det in current_yolo_detections:
-           classidx = int(det.cls.item())
-           classname = labels.get(classidx, f"ID:{classidx}")
-           if classname in REQUIRED_TOOLS_CLASSES:
-               detected_tools_in_frame_names.add(classname)
-               # ... (Drawing logic) ...
+       # ... (display and detection logic) ...
        
        # Check if all tools are collected
        if confirmed_tools == REQUIRED_TOOLS_CLASSES:
@@ -151,56 +81,24 @@ The YOLO model is switched to ``toolsV2.pt`` to recognize the ``Car_Jack`` and `
        
        # Simultaneous validation for all tools
        for tool in REQUIRED_TOOLS_CLASSES:
-           if tool in confirmed_tools:
-               continue  # Skip already confirmed tools
-               
            if tool in detected_tools_in_frame_names:
-               # Tool detected in this frame
-               if tool_validation_timers[tool] is None:
-                   # Start validation timer
-                   tool_validation_timers[tool] = time.time()
-                   tool_lost_timers[tool] = None
-               else:
-                   # Continue validation
-                   elapsed = time.time() - tool_validation_timers[tool]
-                   if elapsed >= VALIDATION_DURATION_SEC:
-                       # Tool confirmed
-                       confirmed_tools.add(tool)
-                       tool_validation_timers[tool] = None
+               # Handle validation timer
+               # ...
            else:
-               # Tool not detected
-               if tool_validation_timers[tool] is not None:
-                   if tool_lost_timers[tool] is None:
-                       # Start lost timer
-                       tool_lost_timers[tool] = time.time()
-                   else:
-                       # Check grace period
-                       time_since_lost = time.time() - tool_lost_timers[tool]
-                       if time_since_lost >= GRACE_PERIOD_DURATION_SEC:
-                           # Tool lost, reset validation
-                           tool_validation_timers[tool] = None
-                           tool_lost_timers[tool] = None
+               # Handle grace period timer
+               # ...
 
-       # Display collected and needed tools
-       still_needed_tools = REQUIRED_TOOLS_CLASSES - confirmed_tools
-       if confirmed_tools:
-           display_message(frame, f"Collected: {', '.join(sorted(list(confirmed_tools)))}", 
-                           Y_OFFSET_COLLECTED_LIST, color=(100, 200, 100))
-       
-       if still_needed_tools:
-           display_message(frame, f"Needed: {', '.join(sorted(list(still_needed_tools)))}", 
-                           Y_OFFSET_NEEDED_LIST, color=(255, 180, 0))
+       # ... (display status of collected and needed tools) ...
+
 
 2. Action Recognition Phase
 ----------------------------
 
 The assistant now switches to the action recognition model (MoViNet) to guide the user through the 9 steps of changing the tire.
 
-**Process**
+**Initialization & Asynchronous Processing**
 
-**Initialization**
-
-The `RealTimeActionRecognizer` class is initialized, and the MoViNet model is loaded. A background thread `inference_thread` is started to handle predictions asynchronously, preventing lag in the main UI thread.
+The `RealTimeActionRecognizer` class is initialized, loading the streaming MoViNet model. To prevent the UI from lagging, a background thread (`inference_thread`) is started to handle model predictions asynchronously. Frames are sent to an input queue, and results are retrieved from an output queue.
 
 .. code-block:: python
 
@@ -208,116 +106,104 @@ The `RealTimeActionRecognizer` class is initialized, and the MoViNet model is lo
    elif app_state == STATE_ACTION_RECOGNITION:
        # Initialize action recognition on first entry
        if action_recognizer is None:
-           print("INFO: Initializing action recognition system")
-           action_recognizer = RealTimeActionRecognizer(action_weights_path, action_config_path)
+           action_recognizer = RealTimeActionRecognizer(...)
            
            # Setup async processing
            movinet_input_queue = queue.Queue(maxsize=1)
            movinet_output_queue = queue.Queue(maxsize=1)
-           movinet_thread = threading.Thread(
-               target=inference_thread,
-               args=(action_recognizer, movinet_input_queue, movinet_output_queue)
-           )
-           movinet_thread.daemon = True
+           movinet_thread = threading.Thread(...)
            movinet_thread.start()
-           
-           current_action_step = 0
-           action_validation_count = 0
-           print(f"Starting action validation for: {ACTION_STEPS[current_action_step]}")
 
-**Step-by-Step Guidance & Frame Processing**
+**Step-by-Step Guidance & Validation**
 
-The program follows a predefined list `ACTION_STEPS`. The main loop captures frames, sends them to `movinet_input_queue` for background processing, and checks `movinet_output_queue` for new predictions.
-
-.. code-block:: python
-   
-   # Display current step
-   step_title = f"STEP {current_action_step+3}: {ACTION_STEPS[current_action_step]}"
-   display_message(frame, step_title, Y_OFFSET_STEP_TITLE, color=(200, 200, 255))
-   
-   # Format and submit frame for processing
-   formatted_frame = action_recognizer.format_frame(frame)
-   if movinet_input_queue.empty():
-       try:
-           movinet_input_queue.put_nowait(formatted_frame)
-       except queue.Full:
-           pass
-   
-   # Get latest prediction
-   prediction = None
-   try:
-       prediction = movinet_output_queue.get_nowait()
-   except queue.Empty:
-       pass
-
-**Action Validation**
-
-When a prediction is available, it's compared to the expected action. If it matches and the confidence is above `0.6`, a validation counter increases. A step is considered complete only after being recognized for `15` consecutive frames.
+The program iterates through a predefined list, `ACTION_STEPS`. For each step, it displays the current instruction (e.g., "STEP 3: loosen_bolts"). The system continuously feeds frames to the MoViNet model. A step is considered complete only after the correct action is recognized with a confidence above `0.6` for `15` consecutive frames. If the prediction matches but confidence drops significantly, MoViNet's internal state is reset to improve accuracy for the next sequence.
 
 .. code-block:: python
 
-   # Process prediction
+   # Process prediction from the queue
    if prediction:
        current_confidence = prediction['confidence']
        current_action = prediction['smoothed_prediction']
        
-       # Display prediction info
-       pred_text = f"Action: {current_action} ({current_confidence:.2f})"
-       display_message(frame, pred_text, Y_OFFSET_MAIN_INSTRUCTION, 
-                       color=(255, 255, 0) if current_action == ACTION_STEPS[current_action_step] else (255, 100, 100))
-       
        # Validate current step
-       if current_action == ACTION_STEPS[current_action_step] and current_confidence >= ACTION_CONFIDENCE_THRESHOLD:
+       if (current_action == ACTION_STEPS[current_action_step] and 
+           current_confidence >= ACTION_CONFIDENCE_THRESHOLD):
            action_validation_count += 1
        else:
            action_validation_count = max(0, action_validation_count - 1)
 
-   # Display validation progress
-   progress_text = f"Validation: {action_validation_count}/{ACTION_VALIDATION_FRAMES}"
-   display_message(frame, progress_text, Y_OFFSET_ACTION_PROGRESS, 
-                   color=(0, 255, 255) if action_validation_count > 0 else (255, 165, 0))
+**Completing All Steps**
 
-
-**Completing a Step, Looping, and Final Message**
-
-When validation reaches 15 frames, **`"Step Completed!"`** is shown, `current_action_step` is incremented, and MoViNet's state is reset. This process loops through all 9 steps. After the last step, **`"ALL STEPS COMPLETED!"`** is shown, and the program exits.
+When a step's validation is successful, **`"Step Completed!"`** is shown, the system moves to the next action, and MoViNet's state is reset. This loop continues until all 9 actions are done. A final **`"ALL STEPS COMPLETED!"`** message is displayed, and the program terminates.
 
 .. code-block:: python
 
    # Check if step is completed
    if action_validation_count >= ACTION_VALIDATION_FRAMES:
-       display_message(frame, "Step Completed!", 
-                       Y_OFFSET_CONFIRMATION_MSG, color=(0, 255, 0))
-       cv2.imshow('Tire Assistant', frame)
-       cv2.waitKey(1500)
+       # ... (display message and wait) ...
        
-       # Move to next step
        current_action_step += 1
        action_validation_count = 0
        
-       # Check if all steps are completed
        if current_action_step >= len(ACTION_STEPS):
-           display_message(frame, "ALL STEPS COMPLETED!", 
-                           Y_OFFSET_MAIN_INSTRUCTION, 
-                           color=(0, 255, 0), font_scale=1.0)
-           cv2.imshow('Tire Assistant', frame)
-           cv2.waitKey(3000)
-           break
+           # ... (display final message and break loop) ...
        
        # Reset states for new action
        action_recognizer.reset_states()
-       last_prediction_confidence = 0.0
-       print(f"Starting action validation for: {ACTION_STEPS[current_action_step]}")
 
-.. raw:: html
 
-   <hr>
+3. Voice Assistant Integration
+------------------------------
 
-3. Complete Runnable Script
+Running concurrently with the computer vision pipeline is a voice assistant that allows the user to ask questions. This component runs in separate threads to avoid interfering with video processing.
+
+**Components:**
+
+-   **Text-to-Speech (TTS)**: A `TTSThread` using `pyttsx3` manages a queue of text responses to be spoken aloud, ensuring voice outputs don't block each other.
+-   **Speech-to-Text (STT)**: The `Vosk` library is used for real-time speech recognition, capturing audio from the microphone.
+-   **Intent Classifier**: A custom `IntentClassifier` class orchestrates the voice interaction. It listens for spoken words, uses a pre-trained TensorFlow model (`intent_model_bilstm_tf`) to classify the user's intent (e.g., `next_step`, `tool_query`), and retrieves a corresponding answer from a `faq.json` file.
+
+**Workflow:**
+
+1.  The `IntentClassifier` continuously listens for voice input in a dedicated thread.
+2.  When the user speaks, `Vosk` transcribes the audio to text.
+3.  The text is passed to the TensorFlow model, which predicts the user's intent.
+4.  The system looks up the answer for the predicted intent in `faq.json`.
+5.  The answer text is sent to the `TTSThread`'s queue to be spoken to the user.
+
+.. code-block:: python
+
+   class IntentClassifier:
+       def __init__(self, tts_queue):
+           self.tts_queue = tts_queue
+           # ... (load Vosk model, TF predictor, and FAQ data) ...
+
+       def start_listening(self):
+           # ... (main loop to listen, recognize, predict, and respond) ...
+           while not self.stopped.is_set():
+               # ...
+               if self.recognizer.AcceptWaveform(data):
+                   text = json.loads(self.recognizer.Result()).get("text", "")
+                   if text:
+                       intent, probability = self.predict_intent(text)
+                       answer = self.intent_to_answer_map.get(intent, "I'm not sure...")
+                       self.tts_queue.put(answer) # Send response to be spoken
+
+   # --- In main_orchestrator() ---
+   # Initialize and start TTS and Intent Classifier threads
+   tts_thread = TTSThread()
+   tts_thread.start()
+   
+   intent_classifier = IntentClassifier(tts_thread.queue)
+   intent_thread = threading.Thread(target=intent_classifier.start_listening)
+   intent_thread.daemon = True
+   intent_thread.start()
+
+
+4. Complete Runnable Script
 -----------------------------
 
-
-Here is the entire script.
+Here is the entire `AlgoV4.py` script, integrating all the components described above.
 
 .. code-block:: python
    :linenos:
@@ -335,6 +221,14 @@ Here is the entire script.
    from ultralytics import YOLO
    from collections import deque, Counter
    from pathlib import Path
+
+   import re
+   from sklearn.preprocessing import LabelEncoder
+   import sounddevice as sd
+   import vosk
+   import pyttsx3
+   from tensorflow.keras.models import load_model
+   from tensorflow.keras.preprocessing.sequence import pad_sequences
 
    # --- MoViNet Integration ---
    try:
@@ -436,6 +330,12 @@ Here is the entire script.
    GRACE_PERIOD_DURATION_SEC = 2.5
    TOOLS_CONFIDENCE_THRESHOLD = 0.6
 
+
+   # --- Intent Classifier Configuration ---
+   VOSK_MODEL_PATH = "vosk-model-small-en-us-0.15"  # Update this path
+   TF_MODEL_DIR = "intent_model_bilstm_tf"
+   FAQ_FILE = "faq.json"
+
    ACTION_VALIDATION_FRAMES = 15
    ACTION_CONFIDENCE_THRESHOLD = 0.6
    ACTION_CONFIDENCE_RESET_THRESHOLD = 0.3  # Reset when confidence drops below this
@@ -447,7 +347,7 @@ Here is the entire script.
 
    # --- Action Steps ---
    ACTION_STEPS = [
-       "loosen_bolts",             # Step 1 - Loosen bolts before lifting the car
+       "loosen_bolts",              # Step 1 - Loosen bolts before lifting the car
        "lift_car_with_jack",       # Step 2 - Lift the car using the jack
        "remove_bolts",             # Step 3 - Remove bolts completely
        "remove_tire",              # Step 4 - Take off the flat tire
@@ -457,6 +357,7 @@ Here is the entire script.
        "lower_car",                # Step 8 - Lower the car back to the ground
        "tighten_bolts"             # Step 9 - Fully tighten bolts after the car is lowered
    ]
+
 
    # --- Display Offsets ---
    Y_OFFSET_STEP_TITLE = 40
@@ -469,7 +370,7 @@ Here is the entire script.
    Y_OFFSET_ACTION_STEP = 250
 
    def display_message(frame, message, y_offset=50, color=(255, 255, 0), 
-                       font_scale=0.7, thickness=2, bg_color=(0, 0, 0)):
+                      font_scale=0.7, thickness=2, bg_color=(0, 0, 0)):
        """Displays a message on the frame with a background."""
        (text_width, text_height), baseline = cv2.getTextSize(
            message, cv2.FONT_HERSHEY_SIMPLEX, font_scale, thickness
@@ -492,12 +393,12 @@ Here is the entire script.
            
        # Draw background
        cv2.rectangle(frame, (rect_x, rect_y), 
-                     (rect_x + rect_width, rect_y + rect_height), 
-                     bg_color, cv2.FILLED)
+                    (rect_x + rect_width, rect_y + rect_height), 
+                    bg_color, cv2.FILLED)
        
        # Draw text
        cv2.putText(frame, message, (rect_x + padding_x, y_offset), 
-                   cv2.FONT_HERSHEY_SIMPLEX, font_scale, color, thickness)
+                  cv2.FONT_HERSHEY_SIMPLEX, font_scale, color, thickness)
 
    def inference_thread(recognizer, input_queue, output_queue):
        """Worker thread for running model inference."""
@@ -509,6 +410,142 @@ Here is the entire script.
            # Run prediction
            prediction = recognizer.predict_frame(frame)
            output_queue.put(prediction)
+
+   # --- Intent Classifier ---
+   class TTSThread(threading.Thread):
+       def __init__(self):
+           super().__init__()
+           self.queue = queue.Queue()
+           self.running = True
+           self.engine = pyttsx3.init()
+           print("✅ TTS Engine initialized successfully.")
+
+       def run(self):
+           while self.running:
+               try:
+                   text = self.queue.get(timeout=1.0)
+                   self.engine.say(text)
+                   self.engine.runAndWait()
+               except queue.Empty:
+                   pass
+
+       def stop(self):
+           self.running = False
+           self.engine.stop()
+
+   class IntentClassifier:
+       def __init__(self, tts_queue):
+           self.tts_queue = tts_queue
+           self.stopped = threading.Event()
+           self.audio_queue = queue.Queue()
+           
+           # Load FAQ data
+           try:
+               with open(FAQ_FILE, 'r', encoding='utf-8') as f:
+                   faq_data = json.load(f)
+               self.intent_to_answer_map = {item['intent']: item['answer'] for item in faq_data}
+           except FileNotFoundError:
+               print(f"Error: '{FAQ_FILE}' not found.")
+               return
+
+           # Initialize predictor
+           try:
+               self.predictor = self.load_predictor(TF_MODEL_DIR)
+           except FileNotFoundError as e:
+               print(f"Error initializing predictor: {e}")
+               return
+
+           # Initialize Vosk model
+           try:
+               self.vosk_model = vosk.Model(VOSK_MODEL_PATH)
+           except Exception as e:
+               print(f"Error loading Vosk model: {e}")
+               return
+               
+           self.recognizer = vosk.KaldiRecognizer(self.vosk_model, 16000)
+           
+       def load_predictor(self, model_dir):
+           if not os.path.exists(model_dir):
+               raise FileNotFoundError(f"Model directory not found at '{model_dir}'")
+               
+           tokenizer_path = os.path.join(model_dir, 'tokenizer.json')
+           with open(tokenizer_path, 'r', encoding='utf-8') as f:
+               tokenizer = tf.keras.preprocessing.text.tokenizer_from_json(f.read())
+
+           label_encoder_path = os.path.join(model_dir, 'label_encoder.json')
+           with open(label_encoder_path, 'r', encoding='utf-8') as f:
+               classes = json.load(f)
+           label_encoder = LabelEncoder()
+           label_encoder.classes_ = np.array(classes)
+
+           model_path = os.path.join(model_dir, 'model.h5')
+           model = load_model(model_path)
+           max_len = model.input_shape[1]
+           
+           print("✅ TensorFlow Intent Predictor initialized")
+           return {
+               'model': model,
+               'tokenizer': tokenizer,
+               'label_encoder': label_encoder,
+               'max_len': max_len
+           }
+
+       def audio_callback(self, indata, frames, time, status):
+           if status:
+               print(status, flush=True)
+           self.audio_queue.put(bytes(indata))
+           
+       def preprocess_text(self, text):
+           if not isinstance(text, str):
+               return ""
+           text = text.lower()
+           text = re.sub(r"([?.!,¿])", r" \1 ", text)
+           text = re.sub(r'[" "]+', " ", text)
+           text = re.sub(r"[^a-zA-Z?.!,¿]+", " ", text)
+           return text.strip()
+
+       def predict_intent(self, text):
+           predictor = self.predictor
+           processed_text = self.preprocess_text(text)
+           sequence = predictor['tokenizer'].texts_to_sequences([processed_text])
+           padded_sequence = pad_sequences(sequence, maxlen=predictor['max_len'], padding='post', truncating='post')
+           
+           prediction = predictor['model'].predict(padded_sequence, verbose=0)
+           predicted_idx = np.argmax(prediction, axis=1)[0]
+           predicted_intent = predictor['label_encoder'].inverse_transform([predicted_idx])[0]
+           return predicted_intent, prediction[0][predicted_idx]
+           
+       def start_listening(self):
+           print("\n🎤 Assistant is now listening...")
+           self.tts_queue.put("Hello! I'm your tire change assistant. How can I help?")
+           
+           with sd.RawInputStream(samplerate=16000, blocksize=8000, dtype='int16',
+                                  channels=1, callback=self.audio_callback):
+               while not self.stopped.is_set():
+                   try:
+                       data = self.audio_queue.get(timeout=1.0)
+                       if self.recognizer.AcceptWaveform(data):
+                           result = self.recognizer.Result()
+                           text = json.loads(result).get("text", "")
+                           
+                           if text and text.strip() != "":
+                               print(f"\nRecognized: '{text}'")
+                               
+                               intent, probability = self.predict_intent(text)
+                               answer = self.intent_to_answer_map.get(intent, 
+                                             "I'm not sure how to answer that. Please ask about tire changing steps.")
+                               
+                               print(f"   -> Intent: '{intent}' ({probability*100:.2f}% confidence)")
+                               print(f"   -> Response: {answer}")
+                               
+                               # Send response to TTS
+                               self.tts_queue.put(answer)
+                               
+                   except queue.Empty:
+                       pass
+                       
+       def stop(self):
+           self.stopped.set()
 
    def main_orchestrator():
        """Main function to run the integrated tire change assistant."""
@@ -537,10 +574,10 @@ Here is the entire script.
        print("----------------------------------")
        
        # --- Model Paths ---
-       flat_tire_model_path = r"C:\Users\SOHAIB\Desktop\Projects\COMPUTER VISION\Last models\flatV2.pt"
-       tools_model_path = r"C:\Users\SOHAIB\Desktop\Projects\COMPUTER VISION\Last models\toolsV2.pt"
-       action_weights_path = r'C:\Users\SOHAIB\Desktop\Projects\COMPUTER VISION\Last models\realtimemovinet\Streaming\streaming_movinet_weights.h5'
-       action_config_path = r'C:\Users\SOHAIB\Desktop\Projects\COMPUTER VISION\Last models\realtimemovinet\Streaming\streaming_model_config.json'
+       flat_tire_model_path = r"flatV2.pt"
+       tools_model_path = r"toolsV2.pt"
+       action_weights_path = r'Streaming\streaming_movinet_weights.h5'
+       action_config_path = r'Streaming\streaming_model_config.json'
        
        # Verify model paths
        model_paths = [
@@ -626,6 +663,22 @@ Here is the entire script.
        action_validation_start_time = None
        last_prediction_time = time.time()
        low_confidence_frames = 0
+
+       # --- Initialize Intent Classifier ---
+       try:
+           tts_thread = TTSThread()
+           tts_thread.start()
+           
+           intent_classifier = IntentClassifier(tts_thread.queue)
+           # Start intent classifier in a separate thread
+           intent_thread = threading.Thread(target=intent_classifier.start_listening)
+           intent_thread.daemon = True
+           intent_thread.start()
+           print("✅ Intent classifier initialized and listening")
+       except Exception as e:
+           print(f"⚠️ Failed to initialize intent classifier: {e}")
+           intent_classifier = None
+           tts_thread = None
        
        # --- Performance Tracking ---
        frame_rate_buffer = deque(maxlen=30)
@@ -649,7 +702,7 @@ Here is the entire script.
                # --- STATE: DETECTING_FLAT_TIRE ---
                if app_state == STATE_DETECTING_FLAT_TIRE:
                    display_message(frame, "STEP 1: Find the Flat Tire", 
-                                   Y_OFFSET_STEP_TITLE, color=(200, 200, 200))
+                                  Y_OFFSET_STEP_TITLE, color=(200, 200, 200))
                    
                    # Run detection
                    results = model(frame, verbose=False, conf=TOOLS_CONFIDENCE_THRESHOLD, device=torch_device)
@@ -667,10 +720,10 @@ Here is the entire script.
                            
                            # Draw bounding box
                            cv2.rectangle(frame, (xyxy[0], xyxy[1]), 
-                                         (xyxy[2], xyxy[3]), (0, 255, 0), 2)
+                                        (xyxy[2], xyxy[3]), (0, 255, 0), 2)
                            cv2.putText(frame, f'{class_name}: {conf:.2f}', 
-                                       (xyxy[0], xyxy[1] - 10), 
-                                       cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+                                      (xyxy[0], xyxy[1] - 10), 
+                                      cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
                            break
                    
                    if found_flat_tire:
@@ -686,7 +739,7 @@ Here is the entire script.
                        elapsed = time.time() - flat_tire_validation_start_time
                        if elapsed >= VALIDATION_DURATION_SEC:
                            display_message(frame, "Flat Tire Confirmed!", 
-                                           Y_OFFSET_STATUS_VALIDATION, color=(0, 255, 0))
+                                          Y_OFFSET_STATUS_VALIDATION, color=(0, 255, 0))
                            cv2.imshow('Tire Assistant', frame)
                            cv2.waitKey(1500)
                            
@@ -703,8 +756,8 @@ Here is the entire script.
                                tool_lost_timers[tool] = None
                        else:
                            display_message(frame, 
-                                           f"Confirming Flat Tire... {VALIDATION_DURATION_SEC - elapsed:.1f}s", 
-                                           Y_OFFSET_STATUS_VALIDATION, color=(0, 255, 255))
+                                          f"Confirming Flat Tire... {VALIDATION_DURATION_SEC - elapsed:.1f}s", 
+                                          Y_OFFSET_STATUS_VALIDATION, color=(0, 255, 255))
                    else:
                        # Handle temporary loss
                        if flat_tire_validation_start_time is not None:
@@ -714,21 +767,21 @@ Here is the entire script.
                            time_since_lost = time.time() - flat_tire_lost_temporarily_time
                            if time_since_lost < GRACE_PERIOD_DURATION_SEC:
                                display_message(frame, 
-                                               f"Searching... {GRACE_PERIOD_DURATION_SEC - time_since_lost:.1f}s", 
-                                               Y_OFFSET_STATUS_VALIDATION, color=(255, 200, 0))
+                                              f"Searching... {GRACE_PERIOD_DURATION_SEC - time_since_lost:.1f}s", 
+                                              Y_OFFSET_STATUS_VALIDATION, color=(255, 200, 0))
                            else:
                                flat_tire_validation_start_time = None
                                flat_tire_lost_temporarily_time = None
                                display_message(frame, "Point camera at the tire", 
-                                               Y_OFFSET_MAIN_INSTRUCTION)
+                                              Y_OFFSET_MAIN_INSTRUCTION)
                        else:
                            display_message(frame, "Point camera at the tire", 
-                                           Y_OFFSET_MAIN_INSTRUCTION)
+                                          Y_OFFSET_MAIN_INSTRUCTION)
                
                # --- STATE: COLLECTING_TOOLS (SIMULTANEOUS VALIDATION) ---
                elif app_state == STATE_COLLECTING_TOOLS:
                    display_message(frame, "STEP 2: Collect Required Tools", 
-                                   Y_OFFSET_STEP_TITLE, color=(200, 200, 200))
+                                  Y_OFFSET_STEP_TITLE, color=(200, 200, 200))
                    
                    # Run detection
                    results = model(frame, verbose=False, conf=TOOLS_CONFIDENCE_THRESHOLD, device=torch_device)
@@ -752,7 +805,7 @@ Here is the entire script.
                                    (148, 103, 189)
                            cv2.rectangle(frame, (xyxy[0], xyxy[1]), (xyxy[2], xyxy[3]), color, 2)
                            cv2.putText(frame, f'{classname}:{conf:.2f}', (xyxy[0], xyxy[1] - 10), 
-                                       cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+                                      cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
                    
                    # Check if all tools are collected
                    if confirmed_tools == REQUIRED_TOOLS_CLASSES:
@@ -781,7 +834,7 @@ Here is the entire script.
                                    confirmed_tools.add(tool)
                                    tool_validation_timers[tool] = None
                                    display_message(frame, f"{tool} Confirmed!", 
-                                                   Y_OFFSET_CONFIRMATION_MSG, color=(0, 255, 0))
+                                                  Y_OFFSET_CONFIRMATION_MSG, color=(0, 255, 0))
                                    cv2.imshow('Tire Assistant', frame)
                                    cv2.waitKey(1000)
                                else:
@@ -806,17 +859,17 @@ Here is the entire script.
                    # Display status messages
                    if status_messages:
                        display_message(frame, " | ".join(status_messages), 
-                                       Y_OFFSET_STATUS_VALIDATION, color=(0, 255, 255))
+                                      Y_OFFSET_STATUS_VALIDATION, color=(0, 255, 255))
                    
                    # Display collected and needed tools
                    still_needed_tools = REQUIRED_TOOLS_CLASSES - confirmed_tools
                    if confirmed_tools:
                        display_message(frame, f"Collected: {', '.join(sorted(list(confirmed_tools)))}", 
-                                       Y_OFFSET_COLLECTED_LIST, color=(100, 200, 100))
+                                      Y_OFFSET_COLLECTED_LIST, color=(100, 200, 100))
                    
                    if still_needed_tools:
                        display_message(frame, f"Needed: {', '.join(sorted(list(still_needed_tools)))}", 
-                                       Y_OFFSET_NEEDED_LIST, color=(255, 180, 0))
+                                      Y_OFFSET_NEEDED_LIST, color=(255, 180, 0))
                
                # --- STATE: ACTION_RECOGNITION ---
                elif app_state == STATE_ACTION_RECOGNITION:
@@ -877,7 +930,7 @@ Here is the entire script.
                        # Display prediction info
                        pred_text = f"Action: {current_action} ({current_confidence:.2f})"
                        display_message(frame, pred_text, Y_OFFSET_MAIN_INSTRUCTION, 
-                                       color=(255, 255, 0) if current_action == ACTION_STEPS[current_action_step] else (255, 100, 100))
+                                   color=(255, 255, 0) if current_action == ACTION_STEPS[current_action_step] else (255, 100, 100))
                        
                        # Validate current step
                        if current_action == ACTION_STEPS[current_action_step] and current_confidence >= ACTION_CONFIDENCE_THRESHOLD:
@@ -886,7 +939,7 @@ Here is the entire script.
                            # Check if step is completed
                            if action_validation_count >= ACTION_VALIDATION_FRAMES:
                                display_message(frame, "Step Completed!", 
-                                               Y_OFFSET_CONFIRMATION_MSG, color=(0, 255, 0))
+                                           Y_OFFSET_CONFIRMATION_MSG, color=(0, 255, 0))
                                cv2.imshow('Tire Assistant', frame)
                                cv2.waitKey(1500)
                                
@@ -897,8 +950,8 @@ Here is the entire script.
                                # Check if all steps are completed
                                if current_action_step >= len(ACTION_STEPS):
                                    display_message(frame, "ALL STEPS COMPLETED!", 
-                                                   Y_OFFSET_MAIN_INSTRUCTION, 
-                                                   color=(0, 255, 0), font_scale=1.0)
+                                               Y_OFFSET_MAIN_INSTRUCTION, 
+                                               color=(0, 255, 0), font_scale=1.0)
                                    cv2.imshow('Tire Assistant', frame)
                                    cv2.waitKey(3000)
                                    break
@@ -913,7 +966,7 @@ Here is the entire script.
                    # Display validation progress
                    progress_text = f"Validation: {action_validation_count}/{ACTION_VALIDATION_FRAMES}"
                    display_message(frame, progress_text, Y_OFFSET_ACTION_PROGRESS, 
-                                   color=(0, 255, 255) if action_validation_count > 0 else (255, 165, 0))
+                               color=(0, 255, 255) if action_validation_count > 0 else (255, 165, 0))
                    
                
                # --- FPS Calculation and Display ---
@@ -925,8 +978,8 @@ Here is the entire script.
                # Display FPS
                fps_color = (0, 255, 0) if avg_frame_rate > 15 else (0, 255, 255) if avg_frame_rate > 5 else (0, 0, 255)
                cv2.putText(frame, f'FPS: {avg_frame_rate:.1f}', 
-                           (frame.shape[1] - 150, 30), 
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.6, fps_color, 2)
+                          (frame.shape[1] - 150, 30), 
+                          cv2.FONT_HERSHEY_SIMPLEX, 0.6, fps_color, 2)
                
                # Display frame
                cv2.imshow('Tire Assistant', frame)
@@ -952,11 +1005,17 @@ Here is the entire script.
            print("INFO: Releasing resources...")
            cap.release()
            cv2.destroyAllWindows()
+
+
            
            # Stop MoViNet thread if running
            if movinet_thread and movinet_thread.is_alive():
                movinet_input_queue.put(None)
                movinet_thread.join(timeout=2.0)
+
+
+           intent_classifier.stop()
+           tts_thread.stop()
            
            print(f"INFO: Average FPS: {avg_frame_rate:.1f}")
            print("INFO: Program terminated")
